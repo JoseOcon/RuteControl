@@ -1,0 +1,7 @@
+{
+  "name": "RuteControl",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
