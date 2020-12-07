@@ -145,6 +145,10 @@
     --ion-color-light-contrast-rgb: 255,255,255;
     --ion-color-light-shade: #1e2023;
     --ion-color-light-tint: #383a3e;
+
+    --theme-color: #3880ff;
+    --theme-black: #000000;
+    --ion-color-gray: #d7d8da;
   }
 
   /*
@@ -228,5 +232,38 @@
     --ion-tab-bar-background: #1f1f1f;
 
     --ion-card-background: #1e1e1e;
+  }
+}
+
+@media (min-height: 319px) {
+  .center {
+    position: absolute;
+    left: 50%;
+    top: 45%;
+    -webkit-transform: translate(-49%, -49%);
+    transform: translate(-49%, -49%);
+    width: 90%;
+  }
+}
+
+@media (min-height: 735px){
+  .center {
+    position: absolute;
+    left: 50%;
+    top: 45%;
+    -webkit-transform: translate(-49%, -49%);
+    transform: translate(-49%, -49%);
+    width: 90%;
+  }
+}
+
+@media (min-height: 812px){
+  .center {
+    position: absolute;
+    left: 50%;
+    top: 40%;
+    -webkit-transform: translate(-49%, -49%);
+    transform: translate(-49%, -49%);
+    width: 90%;
   }
 }

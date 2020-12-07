@@ -7,8 +7,29 @@ const routes: Routes = [
     loadChildren: () => import('./home/home.module').then( m => m.HomePageModule)
   },
   {
+    path: 'places',
+    children: [
+      {
+        path: '',
+        loadChildren: () => import('./places/places.module').then( m => m.PlacesPageModule),
+      },
+      {
+        path: ':placeId',
+        loadChildren: () => import('./places/place-datail/place-datail.module').then(m  => m.PlaceDatailPageModule)
+      }
+    ]
+  },
+  {
+    path: 'create-place',
+    loadChildren: () => import('./places/create-place/create-place.module').then( m => m.CreatePlacePageModule)
+  },
+  {
+    path: 'login',
+    loadChildren: () => import('./login/login.module').then( m => m.LoginPageModule)
+  },
+  {
     path: '',
-    redirectTo: 'home',
+    redirectTo: 'login',
     pathMatch: 'full'
   },
 ];

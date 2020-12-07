@@ -1,0 +1,45 @@
+<ion-header no-border>
+  <div class="login-header ion-padding">
+    <img class="login-img" src="assets/imgs/login.png" />
+  </div>
+</ion-header>
+
+<ion-content >
+  <div class="center">
+    <div heading-column-lr>
+      <h1 big-heading>Login</h1>
+    </div>
+
+    <ion-label>
+      Bienvenido al sistema de rutas ingrese su correo y contraseña para
+      continuar
+    </ion-label>
+
+    <ion-item transparent>
+      <ion-icon name="person-outline" slot="start"></ion-icon>
+      <ion-label position="floating">Correo electrónico</ion-label>
+      <ion-input type="email"></ion-input>
+    </ion-item>
+
+    <ion-item transparent>
+      <ion-icon name="mail-outline" slot="start"></ion-icon>
+      <ion-label position="floating">password</ion-label>
+      <ion-input type="password"></ion-input>
+    </ion-item>
+
+    <ion-label class="forget-password"> Olvidé mi contraseña </ion-label>
+
+    <div linespace></div>
+    <ion-button
+      class="ion-button-class"
+      color="primary"
+      shape="round"
+      fill="solid"
+      size="large"
+      expand="block"
+      (click)="login()"
+    >
+      LOGIN
+    </ion-button>
+  </div>
+</ion-content>
