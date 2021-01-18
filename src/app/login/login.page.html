@@ -5,7 +5,7 @@
 </ion-header>
 
 <ion-content >
-  <div class="center">
+  <div class="center" [formGroup]="loginForm">
     <div heading-column-lr>
       <h1 big-heading>Login</h1>
     </div>
@@ -16,15 +16,15 @@
     </ion-label>
 
     <ion-item transparent>
-      <ion-icon name="person-outline" slot="start"></ion-icon>
+      <ion-icon name="mail-outline" slot="start"></ion-icon>
       <ion-label position="floating">Correo electrónico</ion-label>
-      <ion-input type="email"></ion-input>
+      <ion-input type="email" formControlName="email"></ion-input>
     </ion-item>
 
     <ion-item transparent>
-      <ion-icon name="mail-outline" slot="start"></ion-icon>
+      <ion-icon name="key-outline" slot="start"></ion-icon>
       <ion-label position="floating">password</ion-label>
-      <ion-input type="password"></ion-input>
+      <ion-input type="password" formControlName="password"></ion-input>
     </ion-item>
 
     <ion-label class="forget-password"> Olvidé mi contraseña </ion-label>
@@ -37,6 +37,7 @@
       fill="solid"
       size="large"
       expand="block"
+      [disabled]="!loginForm.valid"
       (click)="login()"
     >
       LOGIN

@@ -1,43 +1,57 @@
-import { NgModule } from '@angular/core';
-import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
+import { NgModule } from "@angular/core";
+import { PreloadAllModules, RouterModule, Routes } from "@angular/router";
+import { environment } from "src/environments/environment";
 
 const routes: Routes = [
   {
-    path: 'home',
-    loadChildren: () => import('./home/home.module').then( m => m.HomePageModule)
+    path: "home",
+    loadChildren: () =>
+      import("./home/home.module").then((m) => m.HomePageModule),
   },
   {
-    path: 'places',
+    path: "places",
     children: [
       {
-        path: '',
-        loadChildren: () => import('./places/places.module').then( m => m.PlacesPageModule),
+        path: "",
+        loadChildren: () =>
+          import("./places/places.module").then((m) => m.PlacesPageModule),
       },
       {
-        path: ':placeId',
-        loadChildren: () => import('./places/place-datail/place-datail.module').then(m  => m.PlaceDatailPageModule)
-      }
-    ]
+        path: ":placeId",
+        loadChildren: () =>
+          import("./places/place-datail/place-datail.module").then(
+            (m) => m.PlaceDatailPageModule
+          ),
+      },
+    ],
   },
   {
-    path: 'create-place',
-    loadChildren: () => import('./places/create-place/create-place.module').then( m => m.CreatePlacePageModule)
+    path: "create-place",
+    loadChildren: () =>
+      import("./places/create-place/create-place.module").then(
+        (m) => m.CreatePlacePageModule
+      ),
   },
   {
-    path: 'login',
-    loadChildren: () => import('./login/login.module').then( m => m.LoginPageModule)
+    path: "login",
+    loadChildren: () =>
+      import("./login/login.module").then((m) => m.LoginPageModule),
   },
   {
-    path: '',
-    redirectTo: 'login',
-    pathMatch: 'full'
+    path: "",
+    redirectTo:
+      JSON.parse(localStorage.getItem(`${environment.localstorage_key}`)) ===
+      null
+        ? "login"
+        : "home",
+    pathMatch: "full",
   },
 ];
 
 @NgModule({
   imports: [
-    RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules })
+    RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules }),
   ],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}
