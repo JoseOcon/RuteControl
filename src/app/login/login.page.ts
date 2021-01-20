@@ -49,5 +49,10 @@ export class LoginPage implements OnInit {
         this._globalService.showMessage(`¡Error: ${err.message}!`);
       },
     });
+    //TODO: QUITAR
+    this.router.navigate(["/main-view"]);
+    this._authService.userLocalSave({
+      nombre: "pepe"
+    });
   }
 }

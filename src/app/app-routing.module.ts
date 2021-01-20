@@ -38,12 +38,41 @@ const routes: Routes = [
       import("./login/login.module").then((m) => m.LoginPageModule),
   },
   {
+    path: "main-view",
+    loadChildren: () =>
+      import("./main-view/main-view.module").then((m) => m.MainViewPageModule),
+  },
+  {
+    path: "routes",
+    children: [
+      {
+        path: "",
+        loadChildren: () =>
+          import("./routes/routes.module").then((m) => m.RoutesPageModule),
+      },
+      {
+        path: ":routeId",
+        loadChildren: () =>
+          import("./routes/route-details/route-details.module").then(
+            (m) => m.RouteDetailsPageModule
+          ),
+      },
+    ],
+  },
+  {
+    path: "create-route",
+    loadChildren: () =>
+      import("./routes/create-route/create-route.module").then(
+        (m) => m.CreateRoutePageModule
+      ),
+  },
+  {
     path: "",
     redirectTo:
       JSON.parse(localStorage.getItem(`${environment.localstorage_key}`)) ===
       null
         ? "login"
-        : "home",
+        : "main-view",
     pathMatch: "full",
   },
 ];

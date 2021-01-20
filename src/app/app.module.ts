@@ -11,6 +11,7 @@ import { AppRoutingModule } from "./app-routing.module";
 import { HttpClientModule } from "@angular/common/http";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { SharedModule } from "./shared.module";
+import { ComponentsModule } from "./components/components.module";
 
 @NgModule({
   declarations: [AppComponent],
@@ -23,6 +24,7 @@ import { SharedModule } from "./shared.module";
     SharedModule,
     FormsModule,
     ReactiveFormsModule,
+    ComponentsModule
   ],
   providers: [
     StatusBar,

@@ -1,0 +1,20 @@
+<app-header title="Rutas"></app-header>
+
+<ion-content>
+  <ion-list *ngIf="routes">
+    <ion-item *ngFor="let r of routes" [routerLink]="['/routes', r.id]">
+      <ion-avatar slot="start">
+        <ion-img [src]="r.imgURL"></ion-img>
+      </ion-avatar>
+      <ion-label>
+        {{r.title}}
+      </ion-label>
+    </ion-item>
+  </ion-list>
+
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button [routerLink]="['/create-route']" color="success">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>
