@@ -7,13 +7,15 @@ import { IonicModule } from '@ionic/angular';
 import { CreateRoutePageRoutingModule } from './create-route-routing.module';
 
 import { CreateRoutePage } from './create-route.page';
+import { ComponentsModule } from 'src/app/components/components.module';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    CreateRoutePageRoutingModule
+    CreateRoutePageRoutingModule,
+    ComponentsModule
   ],
   declarations: [CreateRoutePage]
 })
