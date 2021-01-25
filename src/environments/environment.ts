@@ -5,7 +5,7 @@
 export const environment = {
   production: false,
   localstorage_key: 'key_user',
-  SERVER_BASE_URL: 'localhost'
+  SERVER_BASE_URL: 'https://rutas-viajes.herokuapp.com/'
 };
 
 /*

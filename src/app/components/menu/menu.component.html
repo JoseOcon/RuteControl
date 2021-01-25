@@ -1,4 +1,4 @@
-<ion-menu side="start" contentId="main" menuId="myMenu">
+<ion-menu *ngIf="_authService.isLoggedIn()" side="start" contentId="main" menuId="myMenu">
   <ion-header>
     <ion-toolbar color="primary">
       <ion-title>Menú</ion-title>

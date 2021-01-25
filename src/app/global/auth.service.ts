@@ -30,8 +30,8 @@ export class AuthService {
 
   login(email: String, password: String) {
     return this._http.post(
-      `${environment.SERVER_BASE_URL}generalUsers/loginUser`,
-      { email: email, password: password }
+      `${environment.SERVER_BASE_URL}user/`,
+      { correo: email, contraseña: password }
     );
   }
 

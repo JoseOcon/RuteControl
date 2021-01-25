@@ -36,11 +36,11 @@ export class LoginPage implements OnInit {
 
     this._authService.login(email, password).subscribe({
       next: (data: any) => {
+        console.log(data)
         if (data.status == 200) {
           this._authService.userLocalSave(data.user);
-          //TODO: Validar si es empresa o chofer y redireccionar a su debida vista
           this._globalService.showMessage(`¡Bienvenido ${data.user.nombre}!`);
-          this.router.navigate(["/places"]);
+          this.router.navigate(["/main-view"]);
         } else {
           this._globalService.showMessage(`¡Ha ocurrido un error inesperado!`);
         }
@@ -48,11 +48,6 @@ export class LoginPage implements OnInit {
       error: (err: HttpErrorResponse) => {
         this._globalService.showMessage(`¡Error: ${err.message}!`);
       },
-    });
-    //TODO: QUITAR
-    this.router.navigate(["/main-view"]);
-    this._authService.userLocalSave({
-      nombre: "pepe"
     });
   }
 }
