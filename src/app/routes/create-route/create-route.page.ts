@@ -11,6 +11,7 @@ declare var google;
 })
 export class CreateRoutePage implements OnInit {
 
+  mapElem: HTMLElement = null;
   myMap = null;
   myLatLng = null;
   loading = null;
@@ -43,8 +44,8 @@ export class CreateRoutePage implements OnInit {
   }
 
   createMap(){
-    const myMap: HTMLElement = document.getElementById("map");
-    this.myMap = new google.maps.Map(myMap, {
+    this.mapElem = document.getElementById("map");
+    this.myMap = new google.maps.Map(this.mapElem, {
       center: this.myLatLng,
       zoom: 10,
     });
@@ -53,6 +54,7 @@ export class CreateRoutePage implements OnInit {
   addMapEvents(){
     google.maps.event.addListenerOnce(this.myMap, "idle", () => {
       this.loading.dismiss();
+      this.mapElem.classList.add('show-map')
       this.addMarker(this.myLatLng.lat, this.myLatLng.lng);
     });
   }
