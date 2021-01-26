@@ -38,8 +38,8 @@ export class LoginPage implements OnInit {
       next: (data: any) => {
         console.log(data)
         if (data.status == 200) {
-          this._authService.userLocalSave(data.user);
-          this._globalService.showMessage(`¡Bienvenido ${data.user.nombre}!`);
+          this._authService.userLocalSave(data.body.user);
+          this._globalService.showMessage(`¡Bienvenido ${data.body.user.nombre}!`);
           this.router.navigate(["/main-view"]);
         } else {
           this._globalService.showMessage(`¡Ha ocurrido un error inesperado!`);
