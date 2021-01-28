@@ -5,29 +5,28 @@ import { AlertController, ToastController } from "@ionic/angular";
   providedIn: "root",
 })
 export class GlobalService {
-
   constructor(
     private toastController: ToastController,
     private alertController: AlertController
   ) {}
 
   async showMessage(msg: string) {
-      const toast = await this.toastController.create({
-        duration: 2000,
-        message: msg,
-        position: 'middle',
-      });
+    const toast = await this.toastController.create({
+      duration: 2000,
+      message: msg,
+      position: "middle",
+    });
 
-      await toast.present();
+    await toast.present();
   }
 
-  async showAlert(msg: string, btns: any){
+  async showAlert(msg: string, btns: any) {
     const alert = await this.alertController.create({
       header: msg,
-      buttons: btns
+      buttons: btns,
     });
 
     await alert.present();
   }
-
+  
 }

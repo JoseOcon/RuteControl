@@ -1,6 +1,8 @@
 import { Component, OnInit } from "@angular/core";
-import { LoadingController } from '@ionic/angular';
+import { LoadingController } from "@ionic/angular";
 import { Geolocation } from "@ionic-native/geolocation/ngx";
+import { Marker } from "src/app/interfaces/marker";
+import { THIS_EXPR } from "@angular/compiler/src/output/output_ast";
 
 declare var google;
 
@@ -10,11 +12,17 @@ declare var google;
   styleUrls: ["./create-route.page.scss"],
 })
 export class CreateRoutePage implements OnInit {
-
   mapElem: HTMLElement = null;
   myMap = null;
   myLatLng = null;
   loading = null;
+
+  markers: Array<any> = [];
+
+  icon = {
+    url: "../../../assets/imgs/car-icon.png",
+    scaledSize: new google.maps.Size(50, 60),
+  };
 
   constructor(
     private geolocation: Geolocation,
@@ -34,8 +42,7 @@ export class CreateRoutePage implements OnInit {
     this.addMapEvents();
   }
 
-
-  async getLocation(){
+  async getLocation() {
     const rute = await this.geolocation.getCurrentPosition();
     this.myLatLng = {
       lat: rute.coords.latitude,
@@ -43,7 +50,7 @@ export class CreateRoutePage implements OnInit {
     };
   }
 
-  createMap(){
+  createMap() {
     this.mapElem = document.getElementById("map");
     this.myMap = new google.maps.Map(this.mapElem, {
       center: this.myLatLng,
@@ -51,22 +58,36 @@ export class CreateRoutePage implements OnInit {
     });
   }
 
-  addMapEvents(){
+  addMapEvents() {
     google.maps.event.addListenerOnce(this.myMap, "idle", () => {
       this.loading.dismiss();
-      this.mapElem.classList.add('show-map')
-      this.addMarker(this.myLatLng.lat, this.myLatLng.lng);
+      this.mapElem.classList.add("show-map");
+
+      //Adding click event to add a marker
+      google.maps.event.addListener(this.myMap, "click", (mapsMouseEvent) => {
+        let cstmLatLg = mapsMouseEvent.latLng.toJSON();
+        let position = {
+          lat: cstmLatLg.lat,
+          lng: cstmLatLg.lng
+        }
+        this.addMarker(position)
+      });
     });
   }
 
-  addMarker(lat: Number, lng: Number){
-    const marker = new google.maps.Marker({
-      position: {
-        lat,
-        lng
-      },
-      map: this.myMap
+  addMarker(position){
+    let myMarker = new google.maps.Marker({
+      position: position,
+      map: this.myMap,
+      icon: this.icon,
     });
+
+    //Delete event
+    myMarker.addListener("click", () => {
+      myMarker.setMap(null);
+    });
+
+    this.markers.push(myMarker);
   }
 
 }

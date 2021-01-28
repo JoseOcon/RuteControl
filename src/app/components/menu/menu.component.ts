@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { NavController } from '@ionic/angular';
 import { AuthService } from 'src/app/global/auth.service';
 
 @Component({
@@ -18,9 +20,11 @@ export class MenuComponent implements OnInit {
   ]
 
   constructor(
-    public _authService: AuthService
+    public _authService: AuthService,
+    public router: Router,
+    public navCtrl: NavController
   ) { }
 
   ngOnInit() {}
-
-}
+  
+  }
