@@ -18,12 +18,13 @@ export class CreateRoutePage implements OnInit {
   myLatLng = null;
   loading = null;
   showInfo: boolean = false;
+  distance: number = 0;
 
   markers: Array<any> = [];
 
   icon = {
     url: "../../../assets/imgs/car-icon.png",
-    scaledSize: new google.maps.Size(50, 60),
+    scaledSize: new google.maps.Size(60, 70),
   };
 
   directionsService = new google.maps.DirectionsService();
@@ -90,7 +91,7 @@ export class CreateRoutePage implements OnInit {
       icon: this.icon,
     });
 
-    //Delete event
+    //Delete event to remove marker
     myMarker.addListener("click", () => {
       this.markers = this.markers.filter(
         (elem) =>
@@ -99,15 +100,17 @@ export class CreateRoutePage implements OnInit {
       );
       myMarker.setMap(null);
       this.calculateRute();
+      this.distance = 0;
+      this.getTotalDistance();
     });
 
     this.markers.push(myMarker);
     this.calculateRute();
+    this.getTotalDistance();
   }
 
   async calculateRute() {
     if (this.markers.length > 2) {
-
       let maxIndex = this.markers.length - 1;
       let wayPoints = await this.getWayPoints();
       this.directionsService.route(
@@ -126,6 +129,9 @@ export class CreateRoutePage implements OnInit {
           }
         }
       );
+    }else{
+      //Delete the previus rute
+      this.directionsDisplay.setDirections({routes: []});
     }
   }
 
@@ -144,5 +150,40 @@ export class CreateRoutePage implements OnInit {
       }
     }
     return wayPoints;
+  }
+
+  getTotalDistance() {
+    if (this.markers.length > 2) {
+      for (let i = 0; i < this.markers.length - 1; i++) {
+        let position1 = this.markers[i].position.toJSON();
+        let position2 = this.markers[i + 1].position.toJSON();
+        this.distance += this.getDistanceFromLatLng(
+          position1.lat,
+          position1.lng,
+          position2.lat,
+          position2.lng
+        );
+      }
+      console.log(this.distance)
+    }
+  }
+
+  getDistanceFromLatLng(lat1, lon1, lat2, lon2) {
+    var R = 6371; // Radius of the earth in km
+    var dLat = this.deg2rad(lat2 - lat1); // deg2rad below
+    var dLon = this.deg2rad(lon2 - lon1);
+    var a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(this.deg2rad(lat1)) *
+        Math.cos(this.deg2rad(lat2)) *
+        Math.sin(dLon / 2) *
+        Math.sin(dLon / 2);
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    var d = R * c; // Distance in km
+    return d;
+  }
+
+  deg2rad(deg) {
+    return deg * (Math.PI / 180);
   }
 }
