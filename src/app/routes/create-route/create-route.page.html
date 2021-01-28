@@ -1,5 +1,33 @@
 <app-header title="Creación de Ruta"></app-header>
 
-<ion-content class="ion-padding">
+<ion-content fullscreen class="ion-padding">
+  
+  <ion-item>
+    <ion-label position="floating">Nombre de la ruta (No puede repetirse)</ion-label>
+    <ion-input></ion-input>
+  </ion-item>
+
   <div id="map"></div>
+
+  <ion-list>
+
+    <ion-item>
+      <ion-label>Mostrar información del viaje</ion-label>
+      <ion-toggle [(ngModel)]="showInfo"></ion-toggle>
+    </ion-item>
+
+    <div [hidden]="!showInfo" id="indicators"></div>
+
+    <ion-button
+      class="ion-button-class"
+      color="primary"
+      shape="round"
+      fill="solid"
+      size="large"
+      expand="block"
+    >
+      <ion-label>Crear Ruta</ion-label>
+      <ion-icon name="add-outline"></ion-icon>
+    </ion-button>
+  </ion-list>
 </ion-content>
