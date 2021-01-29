@@ -25,9 +25,13 @@ export class CreateRoutePage implements OnInit {
   distance: number = 0;
   totalPrice: number = 0;
   duration: string = "00:00";
+  secDuration: number = 0;
   stations: number = 0;
 
   markers: Array<any> = [];
+  wayPoints: Array<any> = [];
+  intialPoint = null;
+  finalPoint = null;
   cars = [
     {
       id: 1,
@@ -56,7 +60,7 @@ export class CreateRoutePage implements OnInit {
     this.routeForm = this._fb.group({
       name: ["", [Validators.required]],
       car: ["", Validators.required],
-      time: ["",Validators.required]
+      time: ["", Validators.required],
     });
   }
 
@@ -124,6 +128,9 @@ export class CreateRoutePage implements OnInit {
           elem.position.toJSON().lng != myMarker.position.toJSON().lng
       );
       myMarker.setMap(null);
+      this.wayPoints = [];
+      this.intialPoint = null;
+      this.finalPoint = null;
       this.calculateRute();
       this.distance = 0;
       this.totalPrice = 0;
@@ -140,12 +147,12 @@ export class CreateRoutePage implements OnInit {
   async calculateRute() {
     if (this.markers.length > 2) {
       let maxIndex = this.markers.length - 1;
-      let wayPoints = await this.getWayPoints();
+      this.wayPoints = await this.getWayPoints();
       this.directionsService.route(
         {
           origin: this.markers[0].position.toJSON(),
           destination: this.markers[maxIndex].position.toJSON(),
-          waypoints: wayPoints,
+          waypoints: this.wayPoints,
           optimizeWaypoints: true,
           travelMode: google.maps.TravelMode.DRIVING,
           provideRouteAlternatives: true,
@@ -153,18 +160,13 @@ export class CreateRoutePage implements OnInit {
         (response, status) => {
           if (status === google.maps.DirectionsStatus.OK) {
             var route = response.routes[0];
-            var duration = 0;
+            this.secDuration = 0;
             route.legs.forEach((leg) => {
               // The leg duration in seconds.
-              duration += leg.duration.value;
+              this.secDuration += leg.duration.value;
             });
 
-            let hours = Math.floor(duration / 3600);
-            let minutes = Math.floor((duration - hours * 3600) / 60);
-            this.duration =
-              hours.toString().padStart(2, "0") +
-              ":" +
-              minutes.toString().padStart(2, "0");
+            this.calculateHour();
             this.stations = this.markers.length - 2;
             this.directionsDisplay.setDirections(response);
           } else {
@@ -178,8 +180,24 @@ export class CreateRoutePage implements OnInit {
     }
   }
 
+  calculateHour() {
+    let hours = Math.floor(this.secDuration / 3600);
+    let minutes = Math.floor((this.secDuration - hours * 3600) / 60);
+    this.duration =
+      hours.toString().padStart(2, "0") +
+      ":" +
+      minutes.toString().padStart(2, "0");
+  }
+
   getWayPoints() {
     let wayPoints = [];
+
+    this.intialPoint = {
+      location: {
+        lat: this.markers[0].position.toJSON().lat,
+        lng: this.markers[0].position.toJSON().lng,
+      },
+    };
 
     for (let i = 0; i < this.markers.length; i++) {
       if (i > 0 && i < this.markers.length - 1) {
@@ -190,6 +208,13 @@ export class CreateRoutePage implements OnInit {
           },
           stopover: true,
         });
+      } else if (i == this.markers.length - 1) {
+        this.finalPoint = {
+          location: {
+            lat: this.markers[i].position.toJSON().lat,
+            lng: this.markers[i].position.toJSON().lng,
+          },
+        };
       }
     }
     return wayPoints;
@@ -240,11 +265,25 @@ export class CreateRoutePage implements OnInit {
     );
   }
 
-  disableDialog(){
-    if(!this.routeForm.valid || this.markers.length < 3){
+  disableDialog() {
+    if (!this.routeForm.valid || this.markers.length < 3) {
       return true;
-    }else{
+    } else {
       return false;
     }
+  }
+
+  createRoute() {
+    let route = {
+      nombre: this.routeForm.controls["name"].value,
+      horaSalida: this.routeForm.controls["time"].value,
+      vehiculo: this.routeForm.controls["car"].value,
+      ptInicio: this.intialPoint,
+      ptFinal: this.finalPoint,
+      precio: this.totalPrice,
+      kilometros: this.distance,
+      duracion: this.secDuration,
+    };
+    //console.log(route, this.wayPoints);
   }
 }

@@ -19,7 +19,7 @@
       <ion-item>
         <ion-label>Vehículo asignado</ion-label>
         <ion-select formControlName="car">
-          <ion-select-option *ngFor="let car of cars" [value]="car"
+          <ion-select-option *ngFor="let car of cars" [value]="car.id"
             >{{car.nombre}}</ion-select-option
           >
         </ion-select>
@@ -75,6 +75,7 @@
       fill="solid"
       size="large"
       expand="block"
+      (click)="createRoute()"
       [disabled]="disableDialog()"
     >
       <ion-label>Crear Ruta</ion-label>
