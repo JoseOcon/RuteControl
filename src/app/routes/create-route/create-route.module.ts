@@ -8,6 +8,7 @@ import { CreateRoutePageRoutingModule } from './create-route-routing.module';
 
 import { CreateRoutePage } from './create-route.page';
 import { ComponentsModule } from 'src/app/components/components.module';
+import { SharedModule } from 'src/app/shared.module';
 
 @NgModule({
   imports: [
@@ -15,7 +16,8 @@ import { ComponentsModule } from 'src/app/components/components.module';
     FormsModule,
     IonicModule,
     CreateRoutePageRoutingModule,
-    ComponentsModule
+    ComponentsModule,
+    SharedModule
   ],
   declarations: [CreateRoutePage]
 })

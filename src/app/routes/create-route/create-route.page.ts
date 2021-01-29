@@ -3,6 +3,8 @@ import { LoadingController } from "@ionic/angular";
 import { Geolocation } from "@ionic-native/geolocation/ngx";
 import { Marker } from "src/app/interfaces/marker";
 import { THIS_EXPR } from "@angular/compiler/src/output/output_ast";
+import { GlobalService } from "src/app/global/global.service";
+import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 
 declare var google;
 
@@ -12,6 +14,8 @@ declare var google;
   styleUrls: ["./create-route.page.scss"],
 })
 export class CreateRoutePage implements OnInit {
+  routeForm: FormGroup;
+
   mapElem: HTMLElement = null;
   indicatorsEle: HTMLElement = null;
   myMap = null;
@@ -19,8 +23,21 @@ export class CreateRoutePage implements OnInit {
   loading = null;
   showInfo: boolean = false;
   distance: number = 0;
+  totalPrice: number = 0;
+  duration: string = "00:00";
+  stations: number = 0;
 
   markers: Array<any> = [];
+  cars = [
+    {
+      id: 1,
+      nombre: "Auto 1",
+    },
+    {
+      id: 2,
+      nombre: "Auto 2",
+    },
+  ];
 
   icon = {
     url: "../../../assets/imgs/car-icon.png",
@@ -32,8 +49,15 @@ export class CreateRoutePage implements OnInit {
 
   constructor(
     private geolocation: Geolocation,
-    private loadCtrl: LoadingController
-  ) {}
+    private loadCtrl: LoadingController,
+    private _globalService: GlobalService,
+    private _fb: FormBuilder
+  ) {
+    this.routeForm = this._fb.group({
+      name: ["", [Validators.required]],
+      car: ["", Validators.required],
+    });
+  }
 
   ngOnInit() {
     this.loadMap();
@@ -101,6 +125,9 @@ export class CreateRoutePage implements OnInit {
       myMarker.setMap(null);
       this.calculateRute();
       this.distance = 0;
+      this.totalPrice = 0;
+      this.duration = "00:00";
+      this.stations = 0;
       this.getTotalDistance();
     });
 
@@ -120,18 +147,33 @@ export class CreateRoutePage implements OnInit {
           waypoints: wayPoints,
           optimizeWaypoints: true,
           travelMode: google.maps.TravelMode.DRIVING,
+          provideRouteAlternatives: true,
         },
         (response, status) => {
           if (status === google.maps.DirectionsStatus.OK) {
+            var route = response.routes[0];
+            var duration = 0;
+            route.legs.forEach((leg) => {
+              // The leg duration in seconds.
+              duration += leg.duration.value;
+            });
+
+            let hours = Math.floor(duration / 3600);
+            let minutes = Math.floor((duration - hours * 3600) / 60);
+            this.duration =
+              hours.toString().padStart(2, "0") +
+              ":" +
+              minutes.toString().padStart(2, "0");
+            this.stations = this.markers.length - 2;
             this.directionsDisplay.setDirections(response);
           } else {
-            alert("Could not display directions due to: " + status);
+            alert("¡No existe ruta entre los puntos!" + status);
           }
         }
       );
-    }else{
+    } else {
       //Delete the previus rute
-      this.directionsDisplay.setDirections({routes: []});
+      this.directionsDisplay.setDirections({ routes: [] });
     }
   }
 
@@ -164,7 +206,8 @@ export class CreateRoutePage implements OnInit {
           position2.lng
         );
       }
-      console.log(this.distance)
+      this.distance = +this.distance.toFixed(2);
+      this.totalPrice = +(this.distance * 182).toFixed(2); //Promedio de gasolina por km
     }
   }
 
@@ -185,5 +228,22 @@ export class CreateRoutePage implements OnInit {
 
   deg2rad(deg) {
     return deg * (Math.PI / 180);
+  }
+
+  showHelp() {
+    this._globalService.showMessage(
+      "Presione para crear los puntos en la ruta. El primer punto se tomará como el origen y los siguientes" +
+        " se tomarán como paradas a exesión del último el cual se refiere al punto de destino. Por último, para" +
+        " eliminar un punto cualquiera presione sobre el mismo.",
+      3500
+    );
+  }
+
+  disableDialog(){
+    if(!this.routeForm.valid || this.markers.length < 3){
+      return true;
+    }else{
+      return false;
+    }
   }
 }

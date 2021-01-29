@@ -2,21 +2,61 @@
 
 <ion-content fullscreen class="ion-padding">
   
-  <ion-item>
-    <ion-label position="floating">Nombre de la ruta (No puede repetirse)</ion-label>
-    <ion-input></ion-input>
-  </ion-item>
+  <form [formGroup]="routeForm">
+    <ion-item>
+      <ion-label position="floating"
+        >Nombre de la ruta (No puede repetirse)</ion-label
+      >
+      <ion-input formControlName="name"></ion-input>
+    </ion-item>
+  
+    <ion-list>
+      <ion-item>
+        <ion-label>Vehículo asignado</ion-label>
+        <ion-select formControlName="car">
+          <ion-select-option *ngFor="let car of cars" [value]="car"
+            >{{car.nombre}}</ion-select-option
+          >
+        </ion-select>
+      </ion-item>
+    </ion-list>
+  </form>
+
+  <ion-fab vertical="top" horizontal="end" edge slot="fixed">
+    <ion-fab-button (click)="showHelp()">
+      <ion-icon name="information-outline"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
 
   <div id="map"></div>
 
   <ion-list>
-
     <ion-item>
       <ion-label>Mostrar información del viaje</ion-label>
       <ion-toggle [(ngModel)]="showInfo"></ion-toggle>
     </ion-item>
 
     <div [hidden]="!showInfo" id="indicators"></div>
+
+    <ion-item>
+      <ion-label>Distancia (Km):</ion-label>
+      <ion-input disabled="true" [(ngModel)]="distance"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>Duración (Hrs:min): </ion-label>
+      <ion-input disabled="true" [(ngModel)]="duration"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>Total de paradas: </ion-label>
+      <ion-input disabled="true" [(ngModel)]="stations"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>Precio total: ₡</ion-label>
+      <ion-input disabled="true" [(ngModel)]="totalPrice"></ion-input>
+    </ion-item>
 
     <ion-button
       class="ion-button-class"
@@ -25,6 +65,7 @@
       fill="solid"
       size="large"
       expand="block"
+      [disabled]="disableDialog()"
     >
       <ion-label>Crear Ruta</ion-label>
       <ion-icon name="add-outline"></ion-icon>

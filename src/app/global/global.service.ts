@@ -10,9 +10,9 @@ export class GlobalService {
     private alertController: AlertController
   ) {}
 
-  async showMessage(msg: string) {
+  async showMessage(msg: string, duration?: number) {
     const toast = await this.toastController.create({
-      duration: 2000,
+      duration: duration ? duration : 2000,
       message: msg,
       position: "middle",
     });
