@@ -56,6 +56,7 @@ export class CreateRoutePage implements OnInit {
     this.routeForm = this._fb.group({
       name: ["", [Validators.required]],
       car: ["", Validators.required],
+      time: ["",Validators.required]
     });
   }
 
@@ -235,7 +236,7 @@ export class CreateRoutePage implements OnInit {
       "Presione para crear los puntos en la ruta. El primer punto se tomará como el origen y los siguientes" +
         " se tomarán como paradas a exesión del último el cual se refiere al punto de destino. Por último, para" +
         " eliminar un punto cualquiera presione sobre el mismo.",
-      3500
+      4500
     );
   }
 

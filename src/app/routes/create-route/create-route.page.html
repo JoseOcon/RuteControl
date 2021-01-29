@@ -5,11 +5,16 @@
   <form [formGroup]="routeForm">
     <ion-item>
       <ion-label position="floating"
-        >Nombre de la ruta (No puede repetirse)</ion-label
+        >Nombre de la ruta</ion-label
       >
-      <ion-input formControlName="name"></ion-input>
+      <ion-input placeholder="No puede repetirse*" formControlName="name"></ion-input>
     </ion-item>
   
+    <ion-item>
+      <ion-label>Hora de salida:</ion-label>
+      <ion-datetime formControlName="time" displayFormat="h:mm a" minuteValues="0,15,30,45"></ion-datetime>
+    </ion-item>    
+
     <ion-list>
       <ion-item>
         <ion-label>Vehículo asignado</ion-label>
@@ -33,10 +38,15 @@
   <ion-list>
     <ion-item>
       <ion-label>Mostrar información del viaje</ion-label>
-      <ion-toggle [(ngModel)]="showInfo"></ion-toggle>
+      <ion-toggle [(ngModel)]="showInfo" [disabled]="markers.length < 3"></ion-toggle>
     </ion-item>
 
-    <div [hidden]="!showInfo" id="indicators"></div>
+    <div [hidden]="!showInfo || markers.length < 3" id="indicators"></div>
+
+
+    <ion-item>
+      <ion-label>Información de la ruta:</ion-label>
+    </ion-item>
 
     <ion-item>
       <ion-label>Distancia (Km):</ion-label>
