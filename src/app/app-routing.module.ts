@@ -67,6 +67,10 @@ const routes: Routes = [
       ),
   },
   {
+    path: 'driver-routes',
+    loadChildren: () => import('./driver-routes/driver-routes.module').then( m => m.DriverRoutesPageModule)
+  },
+  {
     path: "",
     redirectTo:
       JSON.parse(localStorage.getItem(`${environment.localstorage_key}`)) ===
@@ -75,6 +79,7 @@ const routes: Routes = [
         : "main-view",
     pathMatch: "full",
   },
+  
 ];
 
 @NgModule({
