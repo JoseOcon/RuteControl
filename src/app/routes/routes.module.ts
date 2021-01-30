@@ -10,6 +10,7 @@ import { RoutesPage } from './routes.page';
 import { ComponentsModule } from '../components/components.module';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { SharedModule } from '../shared.module';
+import { PipesModule } from '../pipes/pipes.module';
 
 @NgModule({
   imports: [
@@ -18,7 +19,8 @@ import { SharedModule } from '../shared.module';
     IonicModule,
     RoutesPageRoutingModule,
     ComponentsModule,
-    SharedModule
+    SharedModule,
+    PipesModule
   ],
   declarations: [RoutesPage],
   providers: [Geolocation]

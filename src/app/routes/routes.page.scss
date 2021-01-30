@@ -1,0 +1,42 @@
+ion-toolbar {
+  margin-bottom: 3%;
+}
+
+::ng-deep .searchbar-input {
+  color: black !important;
+  background-color: white !important;
+}
+
+::ng-deep .searchbar-cancel-button.sc-ion-searchbar-md{
+    color: black !important;
+    background-color: white !important; 
+}
+
+::ng-deep .searchbar-search-icon  {
+    color: black !important;
+    background-color: white !important; 
+}
+
+::ng-deep .searchbar-clear-button  {
+    color: black !important;
+    background-color: white !important; 
+}
+
+ion-card {
+  height: 80% !important;
+  border-radius: 20px;
+}
+
+ion-card-header {
+  text-align: center;
+  background-color: white;
+  height: -webkit-fill-available;
+}
+
+ion-card-title {
+  color: black;
+}
+
+img, ion-card-title {
+  margin: 10% 0;
+}

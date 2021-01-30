@@ -13,6 +13,7 @@ import { HttpClientModule } from "@angular/common/http";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { SharedModule } from "./shared.module";
 import { ComponentsModule } from "./components/components.module";
+import { PipesModule } from "./pipes/pipes.module";
 
 @NgModule({
   declarations: [AppComponent],
@@ -25,7 +26,8 @@ import { ComponentsModule } from "./components/components.module";
     SharedModule,
     FormsModule,
     ReactiveFormsModule,
-    ComponentsModule
+    ComponentsModule,
+    PipesModule
   ],
   providers: [
     Geolocation,
