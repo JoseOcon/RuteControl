@@ -1,9 +1,119 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>route-details</ion-title>
-  </ion-toolbar>
-</ion-header>
+<app-header title="Detalles de Ruta" showBackBtn="true"></app-header>
 
-<ion-content>
+<ion-content fullscreen class="ion-padding">
+  <form [formGroup]="routeForm">
+    <ion-item>
+      <ion-label position="floating">Nombre de la ruta</ion-label>
+      <ion-input
+        [disabled]="!editableMode"
+        placeholder="No puede repetirse*"
+        formControlName="name"
+      ></ion-input>
+    </ion-item>
 
+    <ion-item>
+      <ion-label>Hora de salida:</ion-label>
+      <ion-datetime
+        [disabled]="!editableMode"
+        formControlName="time"
+        displayFormat="h:mm a"
+        minuteValues="0,15,30,45"
+      ></ion-datetime>
+    </ion-item>
+
+    <ion-list>
+      <ion-item>
+        <ion-label>Vehículo asignado</ion-label>
+        <ion-select [disabled]="!editableMode" formControlName="car">
+          <ion-select-option *ngFor="let car of cars" [value]="car.id"
+            >{{car.nombre}}</ion-select-option
+          >
+        </ion-select>
+      </ion-item>
+    </ion-list>
+  </form>
+
+  <ion-fab
+    *ngIf="!editableMode"
+    vertical="top"
+    horizontal="end"
+    edge
+    slot="fixed"
+  >
+    <ion-fab-button>
+      <ion-icon name="settings-outline"></ion-icon>
+    </ion-fab-button>
+    <ion-fab-list>
+      <ion-fab-button (click)="editableMode = true" color="light">
+        <ion-icon name="create-outline"></ion-icon>
+      </ion-fab-button>
+      <ion-fab-button (click)="deleteRoute()" color="light">
+        <ion-icon name="trash-outline"></ion-icon>
+      </ion-fab-button>
+    </ion-fab-list>
+  </ion-fab>
+
+  <ion-fab
+    *ngIf="editableMode"
+    vertical="top"
+    horizontal="end"
+    edge
+    slot="fixed"
+  >
+    <ion-fab-button (click)="cancelEdit()">
+      <ion-icon name="close-outline"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+
+  <div id="map"></div>
+
+  <ion-list>
+    <ion-item>
+      <ion-label>Mostrar información del viaje</ion-label>
+      <ion-toggle
+        [(ngModel)]="showInfo"
+        [disabled]="markers.length < 3"
+      ></ion-toggle>
+    </ion-item>
+
+    <div [hidden]="!showInfo || markers.length < 3" id="indicators"></div>
+
+    <ion-item>
+      <ion-label>Información de la ruta:</ion-label>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>Distancia (Km):</ion-label>
+      <ion-input disabled="true" [(ngModel)]="distance"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>Duración (Hrs:min): </ion-label>
+      <ion-input disabled="true" [(ngModel)]="duration"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>Total de paradas: </ion-label>
+      <ion-input disabled="true" [(ngModel)]="stations"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>Precio total: ₡</ion-label>
+      <ion-input disabled="true" [(ngModel)]="totalPrice"></ion-input>
+    </ion-item>
+
+    <ion-button
+      *ngIf="editableMode"
+      class="ion-button-class"
+      color="primary"
+      shape="round"
+      fill="solid"
+      size="large"
+      expand="block"
+      (click)="modifyRoute()"
+      [disabled]="disableDialog()"
+    >
+      <ion-label>Modificar Ruta</ion-label>
+    </ion-button>
+  </ion-list>
 </ion-content>

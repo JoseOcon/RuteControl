@@ -1,4 +1,4 @@
-<app-header title="Rutas"></app-header>
+<app-header title="Rutas" showBackBtn="true"></app-header>
 
 <ion-content>
   <ion-toolbar color="primary">
@@ -14,7 +14,7 @@
   <ion-list *ngIf="(routes | filter: filterValue).length != 0; else noData">
     <ion-item *ngFor="let r of routes | filter: filterValue" [routerLink]="['/routes', r.id]">
       <ion-avatar slot="start">
-        <ion-img [src]="r.imgURL"></ion-img>
+        <ion-img src="../../assets/imgs/routeimg.png"></ion-img>
       </ion-avatar>
       <ion-label> {{r.nombre}} </ion-label>
     </ion-item>
