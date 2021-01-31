@@ -17,6 +17,8 @@
 
     <div [hidden]="!showInfo || markers.length < 3" id="indicators"></div>
 
+    <hr width="100%" color="white">
+
     <ion-grid>
       <ion-row>
         <ion-col>
@@ -42,5 +44,25 @@
         </ion-list>
       </ion-row>
     </ion-grid>
+
+
+    <hr width="100%" color="white">
+
+    <ion-item>
+      <ion-label>Lista de eventos:</ion-label>
+    </ion-item>
+
+    <ion-list *ngIf="events.length != 0">
+      <ion-item *ngFor="let event of events" >
+        <ion-avatar slot="start">
+          <img src="../../../assets/imgs/warn-icon.png" />
+        </ion-avatar>
+        <ion-label> {{event.nombre}} </ion-label>
+        <ion-button shape="round" (click)="showEventInfo($event, event.id)">
+          <ion-label>Detalles</ion-label>
+        </ion-button>
+      </ion-item>
+    </ion-list>
+
   </ion-list>
 </ion-content>

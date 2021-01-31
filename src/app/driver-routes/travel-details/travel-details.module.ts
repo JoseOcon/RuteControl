@@ -9,6 +9,8 @@ import { TravelDetailsPageRoutingModule } from './travel-details-routing.module'
 import { TravelDetailsPage } from './travel-details.page';
 import { ComponentsModule } from 'src/app/components/components.module';
 import { SharedModule } from 'src/app/shared.module';
+import { AddEventsPage } from 'src/app/add-events/add-events.page';
+import { AddEventsPageModule } from 'src/app/add-events/add-events.module';
 
 @NgModule({
   imports: [
@@ -17,8 +19,10 @@ import { SharedModule } from 'src/app/shared.module';
     IonicModule,
     TravelDetailsPageRoutingModule,
     ComponentsModule,
-    SharedModule
+    SharedModule,
+    AddEventsPageModule
   ],
-  declarations: [TravelDetailsPage]
+  declarations: [TravelDetailsPage],
+  entryComponents: [AddEventsPage]
 })
 export class TravelDetailsPageModule {}

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Geolocation } from "@ionic-native/geolocation/ngx";
-import { LoadingController } from '@ionic/angular';
+import { LoadingController, ModalController } from '@ionic/angular';
+import { AddEventsPage } from 'src/app/add-events/add-events.page';
 import { GlobalService } from 'src/app/global/global.service';
 
 declare var google;
@@ -49,6 +50,7 @@ export class TravelDetailsPage implements OnInit {
     private geolocation: Geolocation,
     private loadCtrl: LoadingController,
     private _globalService: GlobalService,
+    private modalCtrl: ModalController
   ) { }
 
   ngOnInit() {
@@ -185,8 +187,15 @@ export class TravelDetailsPage implements OnInit {
     );
   }
 
-  addEvent(){
+  async addEvent(){
+    const modal = await this.modalCtrl.create({
+      component: AddEventsPage,
+      componentProps: {
+        'travelId': 'Fernando'
+      }
+    })
 
+    await modal.present();
   }
 
   userAsistence(event, userId){

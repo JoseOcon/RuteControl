@@ -1,0 +1,36 @@
+<app-header title="Añadir Evento"></app-header>
+
+<ion-content class="ion-padding">
+
+  <ion-card>
+    <ion-card-header>
+      <img width="50%" style="background: transparent;" src="../../assets/imgs/warning.png">
+      <ion-card-title style="text-align: center;">Por favor describa el evento</ion-card-title>
+    </ion-card-header>
+  </ion-card>
+
+  <form [formGroup]="eventFG">
+    <ion-list>
+      <ion-item>
+        <ion-label position="floating">Nombre</ion-label>
+        <ion-input formControlName="name"></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="floating">descripción</ion-label>
+        <ion-textarea readonly formControlName="description"></ion-textarea>
+      </ion-item>
+    </ion-list>
+  </form>
+
+  <section>
+    <ion-button color="danger" (click)="closeModal()">
+      <ion-label>Cancelar</ion-label>
+      <ion-icon name="close-outline"></ion-icon>
+    </ion-button>
+    <ion-button (click)="createEvent()">
+      <ion-label>Crear Evento</ion-label>
+      <ion-icon name="add"></ion-icon>
+    </ion-button>
+  </section>
+</ion-content>

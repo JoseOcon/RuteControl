@@ -119,7 +119,7 @@ const routes: Routes = [
         ? "login"
         : "main-view",
     pathMatch: "full",
-  },
+  }
 ];
 
 @NgModule({

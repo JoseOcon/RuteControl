@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Geolocation } from "@ionic-native/geolocation/ngx";
-import { LoadingController } from '@ionic/angular';
+import { LoadingController, ModalController } from '@ionic/angular';
+import { AddEventsPage } from 'src/app/add-events/add-events.page';
 
 declare var google;
 
@@ -37,6 +38,13 @@ export class TravelDetailsPage implements OnInit {
     },
   ];
 
+  events: Array<any> = [
+    {
+      id: 1,
+      nombre: "Evento 1"
+    }
+  ];
+
   icon = {
     url: "../../../assets/imgs/car-icon.png",
     scaledSize: new google.maps.Size(50, 60),
@@ -48,6 +56,7 @@ export class TravelDetailsPage implements OnInit {
   constructor(
     private geolocation: Geolocation,
     private loadCtrl: LoadingController,
+    private modalCtrl: ModalController
   ) { }
 
   ngOnInit() {
@@ -172,5 +181,20 @@ export class TravelDetailsPage implements OnInit {
       }
     }
     return wayPoints;
+  }
+
+  userAsistence(event, userId){
+    console.log(event.detail.checked, userId)
+  }
+
+  async showEventInfo(event, id){
+    const modal = await this.modalCtrl.create({
+      component: AddEventsPage,
+      componentProps: {
+        'travelId': id
+      }
+    })
+
+    await modal.present();
   }
 }
