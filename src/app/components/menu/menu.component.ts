@@ -19,8 +19,8 @@ export class MenuComponent implements OnInit {
     },
     {
       icon: "car-outline",
-      name: "Viajes en Ruta",
-      redirectTo: "/routes"
+      name: "Realizar Viajes",
+      redirectTo: "/driver-routes"
     },
   ]
 
@@ -32,4 +32,8 @@ export class MenuComponent implements OnInit {
 
   ngOnInit() {}
   
+  onSearchChange(event){
+
   }
+
+}

@@ -1,0 +1,76 @@
+<app-header title="Viaje Actual"></app-header>
+
+<ion-content fullscreen class="ion-padding">
+  <ion-fab vertical="top" horizontal="end" edge slot="fixed">
+    <ion-fab-button>
+      <ion-icon name="settings-outline"></ion-icon>
+    </ion-fab-button>
+    <ion-fab-list>
+      <ion-fab-button (click)="showHelp()" color="primary">
+        <ion-icon name="information-outline"></ion-icon>
+      </ion-fab-button>
+      <ion-fab-button (click)="addEvent()" color="warning">
+        <ion-icon name="megaphone-outline"></ion-icon>
+      </ion-fab-button>
+    </ion-fab-list>
+  </ion-fab>
+
+  <div id="map"></div>
+
+  <ion-list>
+    <ion-item>
+      <ion-label>Mostrar información del viaje</ion-label>
+      <ion-toggle
+        [(ngModel)]="showInfo"
+        [disabled]="markers.length < 3"
+      ></ion-toggle>
+    </ion-item>
+
+    <div [hidden]="!showInfo || markers.length < 3" id="indicators"></div>
+
+    <ion-grid>
+      <ion-row>
+        <ion-col>
+          <ion-item>
+            <ion-label>Lista de usuarios:</ion-label>
+          </ion-item>
+        </ion-col>
+        <ion-col>
+          <ion-item>
+            <ion-label style="text-align: end;">Asistencia</ion-label>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-list *ngIf="users.length != 0">
+          <ion-item *ngFor="let user of users">
+            <ion-avatar slot="start">
+              <img src="../../../assets/imgs/user-icon.png" />
+            </ion-avatar>
+            <ion-label> {{user.nombre}} </ion-label>
+            <ion-toggle (ionChange)="userAsistence($event, user.id)"></ion-toggle>
+          </ion-item>
+        </ion-list>
+      </ion-row>
+    </ion-grid>
+
+    <section>
+      <ion-button
+        color="primary"
+        shape="round"
+        (click)="updateStatus()"
+      >
+        <ion-label>Actualizar</ion-label>
+        <ion-icon name="refresh-outline"></ion-icon>
+      </ion-button>
+      <ion-button
+        color="success"
+        shape="round"
+        (click)="finishTravel()"
+      >
+        <ion-label>Finalizar</ion-label>
+        <ion-icon name="checkmark-outline"></ion-icon>
+      </ion-button>
+    </section>
+  </ion-list>
+</ion-content>

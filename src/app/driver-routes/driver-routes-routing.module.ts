@@ -7,6 +7,10 @@ const routes: Routes = [
   {
     path: '',
     component: DriverRoutesPage
+  },
+  {
+    path: 'travel-details',
+    loadChildren: () => import('./travel-details/travel-details.module').then( m => m.TravelDetailsPageModule)
   }
 ];
 

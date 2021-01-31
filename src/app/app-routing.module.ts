@@ -67,8 +67,23 @@ const routes: Routes = [
       ),
   },
   {
-    path: 'driver-routes',
-    loadChildren: () => import('./driver-routes/driver-routes.module').then( m => m.DriverRoutesPageModule)
+    path: "driver-routes",
+    children: [
+      {
+        path: "",
+        loadChildren: () =>
+          import("./driver-routes/driver-routes.module").then(
+            (m) => m.DriverRoutesPageModule
+          ),
+      },
+      {
+        path: ":travelId",
+        loadChildren: () =>
+          import("./driver-routes/travel-details/travel-details.module").then(
+            (m) => m.TravelDetailsPageModule
+          ),
+      },
+    ],
   },
   {
     path: "",
