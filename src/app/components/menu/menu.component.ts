@@ -10,25 +10,6 @@ import { AuthService } from 'src/app/global/auth.service';
 })
 export class MenuComponent implements OnInit {
 
-
-  options = [
-    {
-      icon: "location-outline",
-      name: "Gestión de Rutas",
-      redirectTo: "/routes"
-    },
-    {
-      icon: "car-outline",
-      name: "Realizar Viajes",
-      redirectTo: "/driver-routes"
-    },
-    {
-      icon: "map-outline",
-      name: "Gestión de Viajes",
-      redirectTo: "/travels"
-    },
-  ]
-
   constructor(
     public _authService: AuthService,
     public router: Router,

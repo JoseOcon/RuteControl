@@ -1,0 +1,58 @@
+<app-header title="Información del Compañía" showBackBtn="true"></app-header>
+
+<ion-content>
+  <form [formGroup]="companyFG">
+
+    <ion-card>
+      <ion-card-header>
+        <img width="100%" style="background: transparent;" src="../../assets/imgs/company.png">
+        <ion-card-title style="text-align: center;">{{company.nombre}}</ion-card-title>
+      </ion-card-header>
+    </ion-card>
+
+    <ion-list>
+      <ion-item>
+        <ion-label position="floating">Nombre</ion-label>
+        <ion-input  readonly formControlName="name"></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="floating">Identificación</ion-label>
+        <ion-input  readonly formControlName="id"></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="floating">Encargado</ion-label>
+        <ion-input  readonly formControlName="manager"></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="floating">Correo electrónico</ion-label>
+        <ion-input  readonly formControlName="email"></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="floating">Teléfono</ion-label>
+        <ion-input  readonly formControlName="tel"></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="floating">Dirección</ion-label>
+        <ion-textarea
+          
+          readonly
+          formControlName="ubication"
+        ></ion-textarea>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="floating">Descripción</ion-label>
+        <ion-textarea
+          
+          readonly
+          formControlName="description"
+        ></ion-textarea>
+      </ion-item>
+    </ion-list>
+  </form>
+</ion-content>

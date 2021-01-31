@@ -103,6 +103,15 @@ const routes: Routes = [
     ],
   },
   {
+    path: 'my-company',
+    loadChildren: () => import('./my-company/my-company.module').then( m => m.MyCompanyPageModule)
+  },
+  
+  {
+    path: 'my-profile',
+    loadChildren: () => import('./my-profile/my-profile.module').then( m => m.MyProfilePageModule)
+  },
+  {
     path: "",
     redirectTo:
       JSON.parse(localStorage.getItem(`${environment.localstorage_key}`)) ===
