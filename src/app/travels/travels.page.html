@@ -1,0 +1,48 @@
+<app-header title="Viajes" showBackBtn="true"></app-header>
+
+<ion-content class="ion-padding">
+
+  <h1>Seleccione la ruta de viajes</h1>
+
+  <ion-list class="route-select">
+    <ion-item>
+      <ion-label>Ruta</ion-label>
+      <ion-select [(ngModel)]="routeSelected">
+        <ion-select-option *ngFor="let r of routes" [value]="r.id"
+          >{{r.nombre}}</ion-select-option
+        >
+      </ion-select>
+    </ion-item>
+  </ion-list>
+
+  <ion-item *ngIf="travels.length != 0;">
+    <ion-label>
+      Listado de viajes:
+    </ion-label>
+  </ion-item>
+
+  <ion-list *ngIf="travels.length != 0; else noData">
+    <ion-item *ngFor="let t of travels" [routerLink]="['/travels', t.id]">
+      <ion-avatar slot="start">
+        <ion-img src="../../assets/imgs/travel-icon.png"></ion-img>
+      </ion-avatar>
+      <ion-label>Fecha del viaje: {{t.date}} </ion-label>
+    </ion-item>
+  </ion-list>
+
+  <ng-template #noData>
+    <ion-card>
+      <ion-card-header>
+        <img width="100%" style="background: transparent;" src="../../assets/imgs/nodata.png">
+        <ion-card-title>No hay viajes disponibles</ion-card-title>
+      </ion-card-header>
+    </ion-card>
+  </ng-template>
+
+  <ion-fab vertical="top" horizontal="end" edge slot="fixed">
+    <ion-fab-button (click)="showInfo()">
+      <ion-icon name="information-outline"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+
+</ion-content>

@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Geolocation } from "@ionic-native/geolocation/ngx";
 import { LoadingController } from '@ionic/angular';
-import { GlobalService } from 'src/app/global/global.service';
 
 declare var google;
 
@@ -19,6 +18,7 @@ export class TravelDetailsPage implements OnInit {
   myLatLng = null;
   loading = null;
   showInfo: boolean = false;
+  travelDate = null;
 
   markers: Array<any> = [];
   wayPoints: Array<any> = [];
@@ -48,7 +48,6 @@ export class TravelDetailsPage implements OnInit {
   constructor(
     private geolocation: Geolocation,
     private loadCtrl: LoadingController,
-    private _globalService: GlobalService,
   ) { }
 
   ngOnInit() {
@@ -173,35 +172,5 @@ export class TravelDetailsPage implements OnInit {
       }
     }
     return wayPoints;
-  }
-
-  showHelp() {
-    this._globalService.showMessage(
-      "Para actualizar la posición del auto en ruta y los usuarios que se han subido al auto presione el boton" +
-      " \"Actualizar\". Si ya ha finalizado el viaje presione el boton finalizar, una vez hecho esto no se" + 
-      " podrá modificar más el estado del viaje. Por último, para crear un evento presione el segundo botón" + 
-      " con el icono de megáfono.",
-      9000
-    );
-  }
-
-  addEvent(){
-
-  }
-
-  userAsistence(event, userId){
-    console.log(event.detail.checked, userId)
-  }
-
-  updateStatus() {
-    
-    //Al final poner marker en la posicion actual
-    this.currentPositionM.setMap(null);
-    this.currentPositionM = null;
-    this.setCurrentPosition();
-  }
-
-  finishTravel(){
-    
   }
 }

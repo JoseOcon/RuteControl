@@ -22,6 +22,11 @@ export class MenuComponent implements OnInit {
       name: "Realizar Viajes",
       redirectTo: "/driver-routes"
     },
+    {
+      icon: "map-outline",
+      name: "Gestión de Viajes",
+      redirectTo: "/travels"
+    },
   ]
 
   constructor(

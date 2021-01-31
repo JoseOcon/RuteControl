@@ -86,6 +86,23 @@ const routes: Routes = [
     ],
   },
   {
+    path: "travels",
+    children: [
+      {
+        path: "",
+        loadChildren: () =>
+          import("./travels/travels.module").then((m) => m.TravelsPageModule),
+      },
+      {
+        path: ":travelId",
+        loadChildren: () =>
+          import("./travels/travel-details/travel-details.module").then(
+            (m) => m.TravelDetailsPageModule
+          ),
+      },
+    ],
+  },
+  {
     path: "",
     redirectTo:
       JSON.parse(localStorage.getItem(`${environment.localstorage_key}`)) ===
@@ -94,7 +111,6 @@ const routes: Routes = [
         : "main-view",
     pathMatch: "full",
   },
-  
 ];
 
 @NgModule({
