@@ -303,8 +303,6 @@ export class CreateRoutePage implements OnInit {
         this._globalService.showMessage(`Error: ${err.message}`)
       }
     })
-
-    console.log(route, this.wayPoints);
   }
 
 

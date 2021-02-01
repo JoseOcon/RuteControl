@@ -3,6 +3,11 @@ import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { LoadingController } from "@ionic/angular";
 import { GlobalService } from "src/app/global/global.service";
 import { Geolocation } from "@ionic-native/geolocation/ngx";
+import { RoutesService } from "../routes.service";
+import { ActivatedRoute, Router } from "@angular/router";
+import { Stop } from "src/app/interfaces/stop";
+import { HttpErrorResponse } from "@angular/common/http";
+import { Route } from "src/app/interfaces/route";
 
 declare var google;
 
@@ -12,6 +17,8 @@ declare var google;
   styleUrls: ["./route-details.page.scss"],
 })
 export class RouteDetailsPage implements OnInit {
+  routeId: number;
+  route = null;
   routeForm: FormGroup;
   editableMode: boolean = false;
   cancelEditMode: boolean = false;
@@ -36,11 +43,7 @@ export class RouteDetailsPage implements OnInit {
     {
       id: 1,
       nombre: "Auto 1",
-    },
-    {
-      id: 2,
-      nombre: "Auto 2",
-    },
+    }
   ];
 
   icon = {
@@ -55,7 +58,10 @@ export class RouteDetailsPage implements OnInit {
     private geolocation: Geolocation,
     private loadCtrl: LoadingController,
     private _globalService: GlobalService,
-    private _fb: FormBuilder
+    private _fb: FormBuilder,
+    private _routesService: RoutesService,
+    private activatedRoute: ActivatedRoute,
+    private router: Router
   ) {
     this.routeForm = this._fb.group({
       name: ["", [Validators.required]],
@@ -64,15 +70,59 @@ export class RouteDetailsPage implements OnInit {
     });
   }
 
-  ngOnInit() {
+  async ngOnInit() {
+
+    this.activatedRoute.paramMap.subscribe((paramMap) => {
+      this.routeId = +paramMap.get("routeId");
+    });
+
+    await this._routesService.getRoute(this.routeId).toPromise().then(
+      (data: any) => {
+        this.route = data.routes[0];
+      }
+    )
+
     this.cancelEditMode = true;
-    this.loadMap();
+    await this.loadMap();
     this.setData();
     this.cancelEditMode = false;
   }
 
-  setData(){
+  async setData(){
+    this.routeForm.controls['name'].setValue(this.route.nombre)
+    this.routeForm.controls['car'].setValue(this.route.id_Auto)
+    this.routeForm.controls['time'].setValue(this.route.horario_Salida)
 
+    await this.setNullToMarkers()
+    this.markers = [];
+
+    let position = {
+      lat: this.route.punto_Origen_LAT,
+      lng: this.route.punto_Origen_LNG,
+    };
+    this.addMarker(position);
+
+    await this.getStops();
+
+    let position2 = {
+      lat: this.route.punto_Destino_LAT,
+      lng: this.route.punto_Destino_LNG,
+    };
+    this.addMarker(position2);
+  }
+
+  async getStops(){
+    await this._routesService.getStops(this.route.id).toPromise().then(
+      (data: any) => {
+        data.stops.forEach(element => {
+          let position = {
+            lat: element.LAT,
+            lng: element.LNG,
+          };
+          this.addMarker(position)
+        });
+      }
+    )
   }
 
   async loadMap() {
@@ -267,6 +317,15 @@ export class RouteDetailsPage implements OnInit {
     return deg * (Math.PI / 180);
   }
 
+
+  setNullToMarkers(){
+    if(this.markers.length != 0){
+      this.markers.forEach(marker => {
+        marker.setMap(null)
+      })
+    }
+  }
+
   disableDialog() {
     if (!this.routeForm.valid || this.markers.length < 3) {
       return true;
@@ -276,10 +335,60 @@ export class RouteDetailsPage implements OnInit {
   }
 
   cancelEdit() {
+    this.setData();
     this.editableMode = false;
   }
 
-  modifyRoute() {}
+  modifyRoute() {
+    let route: Route = {
+      id: this.route.id,
+      nombre: this.routeForm.controls["name"].value,
+      horarioSalida: this.routeForm.controls["time"].value,
+      idAuto: this.routeForm.controls["car"].value,
+      puntoOrigenLAT: this.intialPoint.location.lat,
+      puntoOrigenLNG: this.intialPoint.location.lng,
+      puntoDestinoLAT: this.finalPoint.location.lat,
+      puntoDestinoLNG: this.finalPoint.location.lng,
+      precioRuta: this.totalPrice,
+      kilometraje: this.distance,
+      tiempoLlegada: this.secDuration,
+      isActive: this.route.is_Active
+    };
 
-  deleteRoute() {}
+    this._routesService.updateRoute(route).subscribe({
+      next: async (data: any) => {
+        if(data.status == 204){
+          this._globalService.showMessage(`Se ha modificado la ruta ${route.nombre}`);
+          await this.removeStops(this.route.id);
+          await this.addStops(this.route.id);
+        }else{
+          this._globalService.showMessage("¡Ocurrio un error al intentar crear la ruta!")
+        }
+      }, error: (err: HttpErrorResponse) => {
+        this._globalService.showMessage(`Error: ${err.message}`)
+      }
+    })
+  }
+
+  async removeStops(routeId: number){
+    await this._routesService.removeStops(routeId).toPromise();
+  }
+
+  async addStops(routeId: number){
+    for (let index = 0; index < this.wayPoints.length; index++) {
+      let marker = this.wayPoints[index];
+
+      let stop: Stop = {
+        idRuta: routeId,
+        LAT: marker.location.lat,
+        LNG: marker.location.lng,
+      }
+
+      await this._routesService.addStop(stop).toPromise();
+    }
+  }
+
+  deleteRoute() {
+    this.router.navigate(['/routes'])
+  }
 }

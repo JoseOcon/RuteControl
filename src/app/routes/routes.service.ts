@@ -32,26 +32,27 @@ export class RoutesService {
     );
   }
 
+  getStops(routeId: number) {
+    return this.http.get(`${environment.SERVER_BASE_URL}stop/`, {
+      params: { id: routeId.toString() },
+    });
+  }
+
   addStop(stop: Stop) {
-    return this.http.post(
-      `${environment.SERVER_BASE_URL}stop/`,
-      stop,
-      {
-        observe: "response",
-      }
-    );
+    return this.http.post(`${environment.SERVER_BASE_URL}stop/`, stop, {
+      observe: "response",
+    });
   }
 
-  removeStop(stopId: number) {
-    return this.http.delete(
-      `${environment.SERVER_BASE_URL}${this.module}removeStop`,
-      { params: { id: stopId.toString() }, observe: "response" }
-    );
+  removeStops(routeId: number) {
+    return this.http.delete(`${environment.SERVER_BASE_URL}stop/${routeId}`, {
+      observe: "response",
+    });
   }
 
-  updateRoute(newRoute){
-    return this.http.patch(
-      `${environment.SERVER_BASE_URL}${this.module}addStop`,
+  updateRoute(newRoute) {
+    return this.http.put(
+      `${environment.SERVER_BASE_URL}${this.module}`,
       newRoute,
       {
         observe: "response",

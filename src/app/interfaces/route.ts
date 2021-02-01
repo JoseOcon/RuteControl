@@ -1,4 +1,5 @@
 export interface Route {
+    id?: number,
     nombre: string,
     puntoOrigenLAT: number,
     puntoOrigenLNG: number,
@@ -9,4 +10,5 @@ export interface Route {
     precioRuta: number,
     kilometraje: number,
     idAuto: number,
+    isActive?: any
 }
