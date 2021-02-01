@@ -1,7 +1,10 @@
 <app-header title="Rutas" showBackBtn="true"></app-header>
 
 <ion-content>
-  <ion-toolbar color="primary">
+
+  <ion-progress-bar *ngIf="loading" type="indeterminate"></ion-progress-bar>
+
+  <ion-toolbar *ngIf="!loading" color="primary">
     <ion-searchbar
       animated
       placeholder="Filtar por nombre"
@@ -11,7 +14,7 @@
     ></ion-searchbar>
   </ion-toolbar>
 
-  <ion-list *ngIf="(routes | filter: filterValue).length != 0; else noData">
+  <ion-list *ngIf="(routes | filter: filterValue).length != 0 && !loading; else noData">
     <ion-item
       *ngFor="let r of routes | filter: filterValue"
       [routerLink]="['/routes', r.id]"
@@ -24,19 +27,16 @@
   </ion-list>
 
   <ng-template #noData>
-    <ion-card>
+    <ion-card *ngIf="!loading">
       <ion-card-header>
         <img
           width="100%"
           style="background: transparent"
           src="../../assets/imgs/nodata.png"
         />
-        <ion-card-title *ngIf="filterValue != ''">
+        <ion-card-title>
           No hay rutas con el nombre: <br />
           {{filterValue}}
-        </ion-card-title>
-        <ion-card-title *ngIf="filterValue == ''">
-          ¡No hay rutas disponibles!
         </ion-card-title>
       </ion-card-header>
     </ion-card>

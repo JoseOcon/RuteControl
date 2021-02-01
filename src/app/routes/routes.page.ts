@@ -16,6 +16,7 @@ export class RoutesPage implements OnInit {
 
   filterValue = '';
   subscription: Subscription;
+  loading: boolean = true;
 
   constructor(
     public _routesService: RoutesService,
@@ -31,6 +32,7 @@ export class RoutesPage implements OnInit {
       next: (data: any) => {
         console.log(data)
         this.routes = data.routes;
+        this.loading = false;
         this.subscription.unsubscribe()
       }, error: (err: HttpErrorResponse) => {
         this._globalService.showMessage(`Error: ${err.message}`);
