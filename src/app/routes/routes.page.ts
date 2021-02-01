@@ -1,4 +1,8 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
+import { GlobalService } from '../global/global.service';
+import { RoutesService } from './routes.service';
 
 @Component({
   selector: 'app-routes',
@@ -8,26 +12,30 @@ import { Component, OnInit } from '@angular/core';
 export class RoutesPage implements OnInit {
 
 
-  routes = [
-    {
-      id: "1",
-      nombre: "First route",
-      imgURL: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a1/Statue_of_Liberty_7.jpg/1200px-Statue_of_Liberty_7.jpg",
-      comments: ["Awesome place", "Wonderful experience"]
-    },
-    {
-      id: "2",
-      nombre: "Second route",
-      imgURL: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a1/Statue_of_Liberty_7.jpg/1200px-Statue_of_Liberty_7.jpg",
-      comments: ["Awesome place", "Wonderful experience"]
-    },
-  ];
+  routes = [];
 
   filterValue = '';
+  subscription: Subscription;
 
-  constructor() { }
+  constructor(
+    public _routesService: RoutesService,
+    public _globalService: GlobalService
+  ) { }
 
   ngOnInit() {
+    this.getRoutes()
+  }
+
+  getRoutes(){
+    this.subscription = this._routesService.getRoutes().subscribe({
+      next: (data: any) => {
+        console.log(data)
+        this.routes = data.routes;
+        this.subscription.unsubscribe()
+      }, error: (err: HttpErrorResponse) => {
+        this._globalService.showMessage(`Error: ${err.message}`);
+      }
+    })
   }
 
   onSearchChange(event){

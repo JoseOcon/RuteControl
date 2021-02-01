@@ -12,14 +12,14 @@ export class MenuComponent implements OnInit {
 
   constructor(
     public _authService: AuthService,
-    public router: Router,
-    public navCtrl: NavController
+    public router: Router
   ) { }
 
   ngOnInit() {}
   
-  onSearchChange(event){
-
+  logOut(){
+    this._authService.logOut();
+    this.router.navigate(['/login'])
   }
 
 }

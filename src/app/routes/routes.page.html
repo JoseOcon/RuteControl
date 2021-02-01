@@ -12,7 +12,10 @@
   </ion-toolbar>
 
   <ion-list *ngIf="(routes | filter: filterValue).length != 0; else noData">
-    <ion-item *ngFor="let r of routes | filter: filterValue" [routerLink]="['/routes', r.id]">
+    <ion-item
+      *ngFor="let r of routes | filter: filterValue"
+      [routerLink]="['/routes', r.id]"
+    >
       <ion-avatar slot="start">
         <ion-img src="../../assets/imgs/routeimg.png"></ion-img>
       </ion-avatar>
@@ -23,12 +26,21 @@
   <ng-template #noData>
     <ion-card>
       <ion-card-header>
-        <img width="100%" style="background: transparent;" src="../../assets/imgs/nodata.png">
-        <ion-card-title>No hay rutas con el nombre: <br> {{filterValue}}</ion-card-title>
+        <img
+          width="100%"
+          style="background: transparent"
+          src="../../assets/imgs/nodata.png"
+        />
+        <ion-card-title *ngIf="filterValue != ''">
+          No hay rutas con el nombre: <br />
+          {{filterValue}}
+        </ion-card-title>
+        <ion-card-title *ngIf="filterValue == ''">
+          ¡No hay rutas disponibles!
+        </ion-card-title>
       </ion-card-header>
     </ion-card>
   </ng-template>
-  
 
   <ion-fab vertical="bottom" horizontal="end" slot="fixed">
     <ion-fab-button [routerLink]="['/create-route']" color="success">

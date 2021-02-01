@@ -12,32 +12,50 @@
   <ion-content>
     <ion-list>
       <ion-menu-toggle>
-
-        <ion-item routerLink="/routes" *ngIf="_authService.getCurrentUser().tipo == 'Compañia'">
+        <ion-item
+          routerLink="/routes"
+          *ngIf="_authService.getCurrentUser().tipo == 'Compañia'"
+        >
           <ion-icon slot="start" name="location-outline"></ion-icon>
           <ion-label>Gestión de Rutas</ion-label>
         </ion-item>
 
-        <ion-item routerLink="/driver-routes" *ngIf="_authService.getCurrentUser().tipo != 'Compañia'">
+        <ion-item
+          routerLink="/driver-routes"
+          *ngIf="_authService.getCurrentUser().tipo != 'Compañia'"
+        >
           <ion-icon slot="start" name="car-outline"></ion-icon>
           <ion-label>Realizar Viajes</ion-label>
         </ion-item>
 
-        <ion-item routerLink="/travels" *ngIf="_authService.getCurrentUser().tipo == 'Compañia'">
+        <ion-item
+          routerLink="/travels"
+          *ngIf="_authService.getCurrentUser().tipo == 'Compañia'"
+        >
           <ion-icon slot="start" name="map-outline"></ion-icon>
           <ion-label>Gestión de Viajes</ion-label>
         </ion-item>
 
-        <ion-item routerLink="/my-company" *ngIf="_authService.getCurrentUser().tipo == 'Compañia'">
+        <ion-item
+          routerLink="/my-company"
+          *ngIf="_authService.getCurrentUser().tipo == 'Compañia'"
+        >
           <ion-icon slot="start" name="business-outline"></ion-icon>
           <ion-label>Mi Compañía</ion-label>
         </ion-item>
 
-        <ion-item routerLink="/my-profile" *ngIf="_authService.getCurrentUser().tipo != 'Compañia'">
+        <ion-item
+          routerLink="/my-profile"
+          *ngIf="_authService.getCurrentUser().tipo != 'Compañia'"
+        >
           <ion-icon slot="start" name="person-circle-outline"></ion-icon>
           <ion-label>Mi Perfil</ion-label>
         </ion-item>
 
+        <ion-item (click)="logOut()">
+          <ion-icon slot="start" name="log-out-outline"></ion-icon>
+          <ion-label>Cerrar Sesión</ion-label>
+        </ion-item>
       </ion-menu-toggle>
     </ion-list>
   </ion-content>

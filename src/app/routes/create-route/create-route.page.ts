@@ -5,6 +5,11 @@ import { Marker } from "src/app/interfaces/marker";
 import { THIS_EXPR } from "@angular/compiler/src/output/output_ast";
 import { GlobalService } from "src/app/global/global.service";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { Route } from "src/app/interfaces/route";
+import { RoutesService } from "../routes.service";
+import { HttpErrorResponse } from "@angular/common/http";
+import { Router } from "@angular/router";
+import { Stop } from "src/app/interfaces/stop";
 
 declare var google;
 
@@ -36,11 +41,7 @@ export class CreateRoutePage implements OnInit {
     {
       id: 1,
       nombre: "Auto 1",
-    },
-    {
-      id: 2,
-      nombre: "Auto 2",
-    },
+    }
   ];
 
   icon = {
@@ -55,7 +56,9 @@ export class CreateRoutePage implements OnInit {
     private geolocation: Geolocation,
     private loadCtrl: LoadingController,
     private _globalService: GlobalService,
-    private _fb: FormBuilder
+    private _fb: FormBuilder,
+    private _routeService: RoutesService,
+    private router: Router
   ) {
     this.routeForm = this._fb.group({
       name: ["", [Validators.required]],
@@ -274,16 +277,48 @@ export class CreateRoutePage implements OnInit {
   }
 
   createRoute() {
-    let route = {
+    let route: Route = {
       nombre: this.routeForm.controls["name"].value,
-      horaSalida: this.routeForm.controls["time"].value,
-      vehiculo: this.routeForm.controls["car"].value,
-      ptInicio: this.intialPoint,
-      ptFinal: this.finalPoint,
-      precio: this.totalPrice,
-      kilometros: this.distance,
-      duracion: this.secDuration,
+      horarioSalida: this.routeForm.controls["time"].value,
+      idAuto: this.routeForm.controls["car"].value,
+      puntoOrigenLAT: this.intialPoint.location.lat,
+      puntoOrigenLNG: this.intialPoint.location.lng,
+      puntoDestinoLAT: this.finalPoint.location.lat,
+      puntoDestinoLNG: this.finalPoint.location.lng,
+      precioRuta: this.totalPrice,
+      kilometraje: this.distance,
+      tiempoLlegada: this.secDuration,
     };
-    //console.log(route, this.wayPoints);
+
+    this._routeService.createRoute(route).subscribe({
+      next: async (data: any) => {
+        if(data.status == 200){
+          this._globalService.showMessage(`Se ha creado la ruta ${route.nombre}`);
+          await this.addStops(data.body.id);
+          this.router.navigate(['/routes'])
+        }else{
+          this._globalService.showMessage("¡Ocurrio un error al intentar crear la ruta!")
+        }
+      }, error: (err: HttpErrorResponse) => {
+        this._globalService.showMessage(`Error: ${err.message}`)
+      }
+    })
+
+    console.log(route, this.wayPoints);
+  }
+
+
+  async addStops(routeId: number){
+    for (let index = 0; index < this.wayPoints.length; index++) {
+      let marker = this.wayPoints[index];
+
+      let stop: Stop = {
+        idRuta: routeId,
+        LAT: marker.location.lat,
+        LNG: marker.location.lng,
+      }
+
+      await this._routeService.addStop(stop).toPromise();
+    }
   }
 }
