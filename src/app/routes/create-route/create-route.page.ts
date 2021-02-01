@@ -295,7 +295,12 @@ export class CreateRoutePage implements OnInit {
         if(data.status == 200){
           this._globalService.showMessage(`Se ha creado la ruta ${route.nombre}`);
           await this.addStops(data.body.id);
-          this.router.navigate(['/routes'])
+          await this._routeService.getRoutes().toPromise().then(
+            (data: any) => {
+              this._routeService.routes = data.routes;
+              this.router.navigate(["/routes"]);
+            }
+          )
         }else{
           this._globalService.showMessage("¡Ocurrio un error al intentar crear la ruta!")
         }

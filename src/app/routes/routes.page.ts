@@ -12,8 +12,6 @@ import { RoutesService } from './routes.service';
 export class RoutesPage implements OnInit {
 
 
-  routes = [];
-
   filterValue = '';
   subscription: Subscription;
   loading: boolean = true;
@@ -30,8 +28,7 @@ export class RoutesPage implements OnInit {
   getRoutes(){
     this.subscription = this._routesService.getRoutes().subscribe({
       next: (data: any) => {
-        console.log(data)
-        this.routes = data.routes;
+        this._routesService.routes = data.routes;
         this.loading = false;
         this.subscription.unsubscribe()
       }, error: (err: HttpErrorResponse) => {

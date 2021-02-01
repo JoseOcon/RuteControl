@@ -43,7 +43,7 @@ export class RouteDetailsPage implements OnInit {
     {
       id: 1,
       nombre: "Auto 1",
-    }
+    },
   ];
 
   icon = {
@@ -71,16 +71,16 @@ export class RouteDetailsPage implements OnInit {
   }
 
   async ngOnInit() {
-
     this.activatedRoute.paramMap.subscribe((paramMap) => {
       this.routeId = +paramMap.get("routeId");
     });
 
-    await this._routesService.getRoute(this.routeId).toPromise().then(
-      (data: any) => {
+    await this._routesService
+      .getRoute(this.routeId)
+      .toPromise()
+      .then((data: any) => {
         this.route = data.routes[0];
-      }
-    )
+      });
 
     this.cancelEditMode = true;
     await this.loadMap();
@@ -88,12 +88,12 @@ export class RouteDetailsPage implements OnInit {
     this.cancelEditMode = false;
   }
 
-  async setData(){
-    this.routeForm.controls['name'].setValue(this.route.nombre)
-    this.routeForm.controls['car'].setValue(this.route.id_Auto)
-    this.routeForm.controls['time'].setValue(this.route.horario_Salida)
+  async setData() {
+    this.routeForm.controls["name"].setValue(this.route.nombre);
+    this.routeForm.controls["car"].setValue(this.route.id_Auto);
+    this.routeForm.controls["time"].setValue(this.route.horario_Salida);
 
-    await this.setNullToMarkers()
+    await this.setNullToMarkers();
     this.markers = [];
 
     let position = {
@@ -111,18 +111,19 @@ export class RouteDetailsPage implements OnInit {
     this.addMarker(position2);
   }
 
-  async getStops(){
-    await this._routesService.getStops(this.route.id).toPromise().then(
-      (data: any) => {
-        data.stops.forEach(element => {
+  async getStops() {
+    await this._routesService
+      .getStops(this.route.id)
+      .toPromise()
+      .then((data: any) => {
+        data.stops.forEach((element) => {
           let position = {
             lat: element.LAT,
             lng: element.LNG,
           };
-          this.addMarker(position)
+          this.addMarker(position);
         });
-      }
-    )
+      });
   }
 
   async loadMap() {
@@ -317,12 +318,11 @@ export class RouteDetailsPage implements OnInit {
     return deg * (Math.PI / 180);
   }
 
-
-  setNullToMarkers(){
-    if(this.markers.length != 0){
-      this.markers.forEach(marker => {
-        marker.setMap(null)
-      })
+  setNullToMarkers() {
+    if (this.markers.length != 0) {
+      this.markers.forEach((marker) => {
+        marker.setMap(null);
+      });
     }
   }
 
@@ -352,29 +352,34 @@ export class RouteDetailsPage implements OnInit {
       precioRuta: this.totalPrice,
       kilometraje: this.distance,
       tiempoLlegada: this.secDuration,
-      isActive: this.route.is_Active
+      isActive: this.route.is_Active,
     };
 
     this._routesService.updateRoute(route).subscribe({
       next: async (data: any) => {
-        if(data.status == 204){
-          this._globalService.showMessage(`Se ha modificado la ruta ${route.nombre}`);
+        if (data.status == 204) {
+          this._globalService.showMessage(
+            `Se ha modificado la ruta ${route.nombre}`
+          );
           await this.removeStops(this.route.id);
           await this.addStops(this.route.id);
-        }else{
-          this._globalService.showMessage("¡Ocurrio un error al intentar crear la ruta!")
+        } else {
+          this._globalService.showMessage(
+            "¡Ocurrio un error al intentar crear la ruta!"
+          );
         }
-      }, error: (err: HttpErrorResponse) => {
-        this._globalService.showMessage(`Error: ${err.message}`)
-      }
-    })
+      },
+      error: (err: HttpErrorResponse) => {
+        this._globalService.showMessage(`Error: ${err.message}`);
+      },
+    });
   }
 
-  async removeStops(routeId: number){
+  async removeStops(routeId: number) {
     await this._routesService.removeStops(routeId).toPromise();
   }
 
-  async addStops(routeId: number){
+  async addStops(routeId: number) {
     for (let index = 0; index < this.wayPoints.length; index++) {
       let marker = this.wayPoints[index];
 
@@ -382,13 +387,39 @@ export class RouteDetailsPage implements OnInit {
         idRuta: routeId,
         LAT: marker.location.lat,
         LNG: marker.location.lng,
-      }
+      };
 
       await this._routesService.addStop(stop).toPromise();
     }
   }
 
   deleteRoute() {
-    this.router.navigate(['/routes'])
+    let route = {
+      id: this.route.id,
+      isActive: 0,
+    };
+
+    this._routesService.updateRoute(route).subscribe({
+      next: async (data: any) => {
+        if (data.status == 204) {
+          this._globalService.showMessage(
+            `Se ha deshabilitado la ruta ${this.route.nombre}`
+          );
+          await this._routesService.getRoutes().toPromise().then(
+            (data: any) => {
+              this._routesService.routes = data.routes;
+              this.router.navigate(["/routes"]);
+            }
+          )
+        } else {
+          this._globalService.showMessage(
+            "¡Ocurrio un error al intentar crear la ruta!"
+          );
+        }
+      },
+      error: (err: HttpErrorResponse) => {
+        this._globalService.showMessage(`Error: ${err.message}`);
+      },
+    });
   }
 }

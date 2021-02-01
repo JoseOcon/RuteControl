@@ -14,9 +14,9 @@
     ></ion-searchbar>
   </ion-toolbar>
 
-  <ion-list *ngIf="(routes | filter: filterValue).length != 0 && !loading; else noData">
+  <ion-list *ngIf="( this._routesService.routes | filter: filterValue).length != 0 && !loading; else noData">
     <ion-item
-      *ngFor="let r of routes | filter: filterValue"
+      *ngFor="let r of  this._routesService.routes | filter: filterValue"
       [routerLink]="['/routes', r.id]"
     >
       <ion-avatar slot="start">

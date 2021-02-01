@@ -9,6 +9,7 @@ import { Stop } from "../interfaces/stop";
 })
 export class RoutesService {
   module = "route/";
+  routes = [];
 
   constructor(private http: HttpClient) {}
 
