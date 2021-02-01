@@ -1,41 +1,56 @@
-import { Component, OnInit } from '@angular/core';
-import { GlobalService } from '../global/global.service';
+import { HttpErrorResponse } from "@angular/common/http";
+import { Component, OnInit } from "@angular/core";
+import { GlobalService } from "../global/global.service";
+import { RoutesService } from "../routes/routes.service";
+import { TravelsService } from "./travels.service";
 
 @Component({
-  selector: 'app-travels',
-  templateUrl: './travels.page.html',
-  styleUrls: ['./travels.page.scss'],
+  selector: "app-travels",
+  templateUrl: "./travels.page.html",
+  styleUrls: ["./travels.page.scss"],
 })
 export class TravelsPage implements OnInit {
+  routes = [];
+  travels = [];
 
-  routes = [
-    {
-      id: "1",
-      nombre: "First route",
-    },
-    {
-      id: "2",
-      nombre: "Second route",
-    },
-  ];
-
-  travels = [
-    {
-      id: 1,
-      date: "12/05/2020"
-    }
-  ];
   routeSelected = null;
-  filterValue = '';
+  filterValue = "";
+  loading: boolean = true;
 
   constructor(
-    private _globalService: GlobalService
-  ) { }
+    private _globalService: GlobalService,
+    public _routesService: RoutesService,
+    public _travelsService: TravelsService
+  ) {}
 
-  ngOnInit() {
+  async ngOnInit() {
+    await this._routesService
+      .getRoutes()
+      .toPromise()
+      .then((data: any) => {
+        this.routes = data.routes;
+        if (this.routes.length != 0) {
+          this.routeSelected = this.routes[0].id;
+          this.routeChanged();
+        }
+      });
   }
 
-  onSearchChange(event){
+  routeChanged() {
+    this.loading = true;
+    this._travelsService.getTravels(this.routeSelected).subscribe({
+      next: (data: any) => {
+        console.log(data);
+        this.travels = data.travels;
+        this.loading = false;
+      },
+      error: (err: HttpErrorResponse) => {
+        this._globalService.showMessage(`Error: ${err.message}`);
+      },
+    });
+  }
+
+  onSearchChange(event) {
     const filter = event.target.value;
     this.filterValue = filter;
   }

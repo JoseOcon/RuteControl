@@ -7,7 +7,7 @@
   <ion-list class="route-select">
     <ion-item>
       <ion-label>Ruta</ion-label>
-      <ion-select [(ngModel)]="routeSelected">
+      <ion-select [(ngModel)]="routeSelected" ionChange="routeChanged()">
         <ion-select-option *ngFor="let r of routes" [value]="r.id"
           >{{r.nombre}}</ion-select-option
         >
@@ -15,23 +15,25 @@
     </ion-item>
   </ion-list>
 
-  <ion-item *ngIf="travels.length != 0;">
+  <ion-progress-bar *ngIf="loading" type="indeterminate"></ion-progress-bar>
+
+  <ion-item *ngIf="travels.length != 0 && !loading;">
     <ion-label>
       Listado de viajes:
     </ion-label>
   </ion-item>
 
-  <ion-list *ngIf="travels.length != 0; else noData">
+  <ion-list *ngIf="travels.length != 0 && !loading; else noData">
     <ion-item *ngFor="let t of travels" [routerLink]="['/travels', t.id]">
       <ion-avatar slot="start">
         <ion-img src="../../assets/imgs/travel-icon.png"></ion-img>
       </ion-avatar>
-      <ion-label>Fecha del viaje: {{t.date}} </ion-label>
+      <ion-label>Fecha del viaje: {{t.fecha | date: 'shortDate':"+0000"}} </ion-label>
     </ion-item>
   </ion-list>
 
   <ng-template #noData>
-    <ion-card>
+    <ion-card *ngIf="!loading">
       <ion-card-header>
         <img width="100%" style="background: transparent;" src="../../assets/imgs/nodata.png">
         <ion-card-title>No hay viajes disponibles</ion-card-title>
