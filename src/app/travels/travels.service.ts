@@ -15,4 +15,22 @@ export class TravelsService {
       params: { id: routeId.toString() },
     });
   }
+
+  getTravel(travelId: number) {
+    return this.http.get(
+      `${environment.SERVER_BASE_URL}${this.module}${travelId}`
+    );
+  }
+
+  getTravelUsers(travelId: number){
+    return this.http.get(
+      `${environment.SERVER_BASE_URL}user/${travelId}`
+    );
+  }
+
+  getTravelEvents(travelId: number){
+    return this.http.get(
+      `${environment.SERVER_BASE_URL}event/${travelId}`
+    );
+  }
 }

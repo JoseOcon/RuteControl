@@ -1,8 +1,9 @@
 <app-header title="Detalles de Viaje" showBackBtn="true"></app-header>
 
 <ion-content fullscreen class="ion-padding">
-
-  <h1 style="text-align: center;"> Fecha: {{travelDate}}</h1>
+  <h1 style="text-align: center">
+    Fecha: {{travel.fecha | date: 'shortDate':"+0000"}}
+  </h1>
 
   <div id="map"></div>
 
@@ -17,7 +18,7 @@
 
     <div [hidden]="!showInfo || markers.length < 3" id="indicators"></div>
 
-    <hr width="100%" color="white">
+    <hr width="100%" color="white" />
 
     <ion-grid>
       <ion-row>
@@ -28,7 +29,7 @@
         </ion-col>
         <ion-col>
           <ion-item>
-            <ion-label style="text-align: end;">Asistencia</ion-label>
+            <ion-label style="text-align: end">Asistencia</ion-label>
           </ion-item>
         </ion-col>
       </ion-row>
@@ -38,31 +39,29 @@
             <ion-avatar slot="start">
               <img src="../../../assets/imgs/user-icon.png" />
             </ion-avatar>
-            <ion-label> {{user.nombre}} </ion-label>
-            <ion-toggle (ionChange)="userAsistence($event, user.id)"></ion-toggle>
+            <ion-label > {{user.nombre}} </ion-label>
+            <ion-toggle [checked]="user.is_Active" disabled></ion-toggle>
           </ion-item>
         </ion-list>
       </ion-row>
     </ion-grid>
 
-
-    <hr width="100%" color="white">
+    <hr width="100%" color="white" />
 
     <ion-item>
       <ion-label>Lista de eventos:</ion-label>
     </ion-item>
 
     <ion-list *ngIf="events.length != 0">
-      <ion-item *ngFor="let event of events" >
+      <ion-item *ngFor="let event of events">
         <ion-avatar slot="start">
           <img src="../../../assets/imgs/warn-icon.png" />
         </ion-avatar>
         <ion-label> {{event.nombre}} </ion-label>
-        <ion-button shape="round" (click)="showEventInfo($event, event.id)">
+        <ion-button shape="round" (click)="showEventInfo($event, event)">
           <ion-label>Detalles</ion-label>
         </ion-button>
       </ion-item>
     </ion-list>
-
   </ion-list>
 </ion-content>

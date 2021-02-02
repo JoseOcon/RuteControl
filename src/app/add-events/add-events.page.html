@@ -1,11 +1,20 @@
-<app-header title="Añadir Evento"></app-header>
+<app-header *ngIf="!onlyShowInfo" title="Añadir Evento"></app-header>
+<app-header *ngIf="onlyShowInfo" title="Detalles de Evento"></app-header>
 
 <ion-content class="ion-padding">
-
   <ion-card>
     <ion-card-header>
-      <img width="50%" style="background: transparent;" src="../../assets/imgs/warning.png">
-      <ion-card-title style="text-align: center;">Por favor describa el evento</ion-card-title>
+      <img
+        width="50%"
+        style="background: transparent"
+        src="../../assets/imgs/warning.png"
+      />
+      <ion-card-title *ngIf="!onlyShowInfo" style="text-align: center"
+        >Por favor describa el evento</ion-card-title
+      >
+      <ion-card-title *ngIf="onlyShowInfo" style="text-align: center"
+        >Información del evento</ion-card-title
+      >
     </ion-card-header>
   </ion-card>
 
@@ -24,11 +33,17 @@
   </form>
 
   <section>
-    <ion-button color="danger" (click)="closeModal()">
+    <ion-button *ngIf="!onlyShowInfo" color="danger" (click)="closeModal()">
       <ion-label>Cancelar</ion-label>
       <ion-icon name="close-outline"></ion-icon>
     </ion-button>
-    <ion-button (click)="createEvent()">
+
+    <ion-button *ngIf="onlyShowInfo" color="danger" (click)="closeModal()">
+      <ion-label>Cerrar</ion-label>
+      <ion-icon name="close-outline"></ion-icon>
+    </ion-button>
+
+    <ion-button *ngIf="!onlyShowInfo" (click)="createEvent()">
       <ion-label>Crear Evento</ion-label>
       <ion-icon name="add"></ion-icon>
     </ion-button>

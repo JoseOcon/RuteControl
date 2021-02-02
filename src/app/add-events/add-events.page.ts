@@ -9,7 +9,9 @@ import { ModalController } from '@ionic/angular';
 })
 export class AddEventsPage implements OnInit {
 
-  @Input() travelId;
+  @Input() myEvent;
+  @Input() onlyShowInfo: boolean;
+
   eventFG: FormGroup
 
   constructor(
@@ -23,6 +25,10 @@ export class AddEventsPage implements OnInit {
   }
 
   ngOnInit() {
+    if(this.onlyShowInfo){
+      this.eventFG.controls['name'].setValue(this.myEvent.nombre)
+      this.eventFG.controls['description'].setValue(this.myEvent.descripcion)
+    }
   }
 
   createEvent(){
