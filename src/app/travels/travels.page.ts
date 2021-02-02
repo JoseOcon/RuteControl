@@ -40,7 +40,6 @@ export class TravelsPage implements OnInit {
     this.loading = true;
     this._travelsService.getTravels(this.routeSelected).subscribe({
       next: (data: any) => {
-        console.log(data);
         this.travels = data.travels;
         this.loading = false;
       },

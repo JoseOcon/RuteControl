@@ -1,10 +1,9 @@
 <app-header title="Rutas Disponibles" showBackBtn="true"></app-header>
 
 <ion-content class="ion-padding">
-
   <h1>Seleccione la ruta para emprender el viaje</h1>
 
-  <ion-toolbar color="primary">
+  <ion-toolbar *ngIf="!loading" color="primary">
     <ion-searchbar
       animated
       placeholder="Filtar por nombre"
@@ -14,8 +13,15 @@
     ></ion-searchbar>
   </ion-toolbar>
 
-  <ion-list *ngIf="(routes | filter: filterValue).length != 0; else noData">
-    <ion-item *ngFor="let r of routes | filter: filterValue" (click)="createTravel()">
+  <ion-progress-bar *ngIf="loading" type="indeterminate"></ion-progress-bar>
+
+  <ion-list
+    *ngIf="(routes | filter: filterValue).length != 0 && !loading; else noData"
+  >
+    <ion-item
+      *ngFor="let r of routes | filter: filterValue"
+      (click)="createTravel(r.id)"
+    >
       <ion-avatar slot="start">
         <ion-img src="../../assets/imgs/routeimg.png"></ion-img>
       </ion-avatar>
@@ -24,14 +30,20 @@
   </ion-list>
 
   <ng-template #noData>
-    <ion-card>
+    <ion-card *ngIf="!loading">
       <ion-card-header>
-        <img width="100%" style="background: transparent;" src="../../assets/imgs/nodata.png">
-        <ion-card-title>No hay rutas con el nombre: <br> {{filterValue}}</ion-card-title>
+        <img
+          width="100%"
+          style="background: transparent"
+          src="../../assets/imgs/nodata.png"
+        />
+        <ion-card-title
+          >No hay rutas con el nombre: <br />
+          {{filterValue}}</ion-card-title
+        >
       </ion-card-header>
     </ion-card>
   </ng-template>
-  
 
   <ion-fab vertical="top" horizontal="end" slot="fixed" edge>
     <ion-fab-button (click)="showHelp()" color="primary">
@@ -39,4 +51,3 @@
     </ion-fab-button>
   </ion-fab>
 </ion-content>
-

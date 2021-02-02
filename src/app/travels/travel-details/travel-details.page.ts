@@ -216,7 +216,6 @@ export class TravelDetailsPage implements OnInit {
   getTravelEvents(){
     this._travelService.getTravelEvents(this.travelId).subscribe(
       (data: any) => {
-        console.log(data)
         this.events = data.events;
       }
     )
@@ -227,7 +226,8 @@ export class TravelDetailsPage implements OnInit {
       component: AddEventsPage,
       componentProps: {
         myEvent: myEvent,
-        onlyShowInfo: true
+        onlyShowInfo: true,
+        travelId: null
       },
     });
 

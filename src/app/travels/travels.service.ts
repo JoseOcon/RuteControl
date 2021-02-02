@@ -22,15 +22,36 @@ export class TravelsService {
     );
   }
 
-  getTravelUsers(travelId: number){
-    return this.http.get(
-      `${environment.SERVER_BASE_URL}user/${travelId}`
+  getTravelUsers(travelId: number) {
+    return this.http.get(`${environment.SERVER_BASE_URL}user/${travelId}`);
+  }
+
+  getTravelEvents(travelId: number) {
+    return this.http.get(`${environment.SERVER_BASE_URL}event/${travelId}`);
+  }
+
+  createTravel(routeId: number) {
+    let json = {
+      idRuta: routeId,
+    };
+    return this.http.post(
+      `${environment.SERVER_BASE_URL}${this.module}`,
+      json,
+      { observe: "response" }
     );
   }
 
-  getTravelEvents(travelId: number){
-    return this.http.get(
-      `${environment.SERVER_BASE_URL}event/${travelId}`
+  createTravelEvent(event){
+    return this.http.post(
+      `${environment.SERVER_BASE_URL}event/`,
+      event,
+      { observe: "response" }
     );
+  }
+
+  updateTravelUserState(userTravel) {
+    return this.http.put(`${environment.SERVER_BASE_URL}${this.module}userTravel`, userTravel, {
+      observe: "response",
+    });
   }
 }

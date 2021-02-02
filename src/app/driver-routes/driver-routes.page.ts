@@ -1,41 +1,47 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { GlobalService } from '../global/global.service';
+import { HttpErrorResponse } from "@angular/common/http";
+import { Component, OnInit } from "@angular/core";
+import { Router } from "@angular/router";
+import { LoadingController } from "@ionic/angular";
+import { GlobalService } from "../global/global.service";
+import { RoutesService } from "../routes/routes.service";
+import { TravelsService } from "../travels/travels.service";
 
 @Component({
-  selector: 'app-driver-routes',
-  templateUrl: './driver-routes.page.html',
-  styleUrls: ['./driver-routes.page.scss'],
+  selector: "app-driver-routes",
+  templateUrl: "./driver-routes.page.html",
+  styleUrls: ["./driver-routes.page.scss"],
 })
 export class DriverRoutesPage implements OnInit {
-
-
-  routes = [
-    {
-      id: "1",
-      nombre: "First route",
-      imgURL: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a1/Statue_of_Liberty_7.jpg/1200px-Statue_of_Liberty_7.jpg",
-      comments: ["Awesome place", "Wonderful experience"]
-    },
-    {
-      id: "2",
-      nombre: "Second route",
-      imgURL: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a1/Statue_of_Liberty_7.jpg/1200px-Statue_of_Liberty_7.jpg",
-      comments: ["Awesome place", "Wonderful experience"]
-    },
-  ];
-
-  filterValue = '';
+  routes = [];
+  loadingC = null;
+  filterValue = "";
+  loading: boolean = true;
 
   constructor(
     private _globalService: GlobalService,
     private router: Router,
-  ) { }
+    private _routesService: RoutesService,
+    private _travelService: TravelsService,
+    private loadCtrl: LoadingController,
+  ) {}
 
   ngOnInit() {
+    this.getRoutes();
   }
 
-  onSearchChange(event){
+  getRoutes() {
+    this._routesService.getRoutes().subscribe({
+      next: (data: any) => {
+        this.routes = data.routes;
+        this.loading = false;
+      },
+      error: (err: HttpErrorResponse) => {
+        this._globalService.showMessage(`Error: ${err.message}`);
+      },
+    });
+  }
+
+  onSearchChange(event) {
     const filter = event.target.value;
     this.filterValue = filter;
   }
@@ -43,13 +49,30 @@ export class DriverRoutesPage implements OnInit {
   showHelp() {
     this._globalService.showMessage(
       "Al presionar sobre la ruta esto creará inmediatamente un nuevo viaje, lo cual lo llevará a una nueva" +
-      " vista en donde verá el listado de todos los usuario pertenecientes a dicha ruta además de la ruta en sí.",
+        " vista en donde verá el listado de todos los usuario pertenecientes a dicha ruta además de la ruta en sí.",
       4500
     );
   }
 
-
-  createTravel(){
-    this.router.navigate(['/driver-routes', 1])
+  async createTravel(routeId: number) {
+    this.loadingC = await this.loadCtrl.create();
+    this.loadingC.present();
+    this._travelService.createTravel(routeId).subscribe({
+      next: (data: any) => {
+        if (data.status == 200) {
+          this.router.navigate(["/driver-routes", data.body.id]);
+          this.loadingC.dismiss();
+        } else {
+          this._globalService.showMessage(
+            "¡Ocurrió un error al intentar crear el viaje!"
+          );
+          this.loadingC.dismiss();
+        }
+      },
+      error: (err: HttpErrorResponse) => {
+        this._globalService.showMessage(`Error: ${err.message}`),
+        this.loadingC.dismiss();
+      }
+    });
   }
 }

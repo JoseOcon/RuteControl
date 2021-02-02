@@ -37,7 +37,7 @@
         </ion-col>
         <ion-col>
           <ion-item>
-            <ion-label style="text-align: end;">Asistencia</ion-label>
+            <ion-label style="text-align: end">Asistencia</ion-label>
           </ion-item>
         </ion-col>
       </ion-row>
@@ -48,26 +48,21 @@
               <img src="../../../assets/imgs/user-icon.png" />
             </ion-avatar>
             <ion-label> {{user.nombre}} </ion-label>
-            <ion-toggle (ionChange)="userAsistence($event, user.id)"></ion-toggle>
+            <ion-toggle
+              [checked]="user.is_Active"
+              (ionChange)="userAsistence($event, user.id)"
+            ></ion-toggle>
           </ion-item>
         </ion-list>
       </ion-row>
     </ion-grid>
 
     <section>
-      <ion-button
-        color="primary"
-        shape="round"
-        (click)="updateStatus()"
-      >
+      <ion-button color="primary" shape="round" (click)="updateStatus()">
         <ion-label>Actualizar</ion-label>
         <ion-icon name="refresh-outline"></ion-icon>
       </ion-button>
-      <ion-button
-        color="success"
-        shape="round"
-        (click)="finishTravel()"
-      >
+      <ion-button color="success" shape="round" (click)="finishTravel()">
         <ion-label>Finalizar</ion-label>
         <ion-icon name="checkmark-outline"></ion-icon>
       </ion-button>

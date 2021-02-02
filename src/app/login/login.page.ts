@@ -44,7 +44,6 @@ export class LoginPage implements OnInit {
 
     this._authService.login(email, password).subscribe({
       next: (data: any) => {
-        console.log(data);
         if (data.status == 200) {
           this._authService.userLocalSave(data.body.user);
           data.body.user.tipo == "Compañia"

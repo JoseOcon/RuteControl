@@ -1,8 +1,12 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Geolocation } from "@ionic-native/geolocation/ngx";
 import { LoadingController, ModalController } from '@ionic/angular';
 import { AddEventsPage } from 'src/app/add-events/add-events.page';
 import { GlobalService } from 'src/app/global/global.service';
+import { RoutesService } from 'src/app/routes/routes.service';
+import { TravelsService } from 'src/app/travels/travels.service';
 
 declare var google;
 
@@ -13,6 +17,9 @@ declare var google;
 })
 export class TravelDetailsPage implements OnInit {
 
+  travelId: number;
+  route: any = null;
+
   mapElem: HTMLElement = null;
   indicatorsEle: HTMLElement = null;
 
@@ -20,23 +27,19 @@ export class TravelDetailsPage implements OnInit {
   myLatLng = null;
   loading = null;
   showInfo: boolean = false;
+  travel: any = {
+    fecha: null,
+  };
 
   markers: Array<any> = [];
   wayPoints: Array<any> = [];
   intialPoint = null;
   finalPoint = null;
-  currentPositionM =  null;
+  currentPositionM = null;
 
-  users: Array<any> = [
-    {
-      id: 1,
-      nombre: "Usuario 1"
-    },
-    {
-      id: 2,
-      nombre: "Usuario 2"
-    },
-  ];
+  users: Array<any> = [];
+
+  events: Array<any> = [];
 
   icon = {
     url: "../../../assets/imgs/car-icon.png",
@@ -49,18 +52,81 @@ export class TravelDetailsPage implements OnInit {
   constructor(
     private geolocation: Geolocation,
     private loadCtrl: LoadingController,
+    private modalCtrl: ModalController,
+    private activatedRoute: ActivatedRoute,
+    private _travelService: TravelsService,
+    private _routeService: RoutesService,
     private _globalService: GlobalService,
-    private modalCtrl: ModalController
-  ) { }
+    private router: Router
+  ) {}
 
-  ngOnInit() {
-    this.loadMap();
+  async ngOnInit() {
+    await this.startPage()
   }
 
-  async loadMap() {
+  async startPage(){
     this.loading = await this.loadCtrl.create();
     this.loading.present();
 
+    this.activatedRoute.paramMap.subscribe((paramMap) => {
+      this.travelId = +paramMap.get("travelId");
+    });
+
+    await this._travelService
+      .getTravel(this.travelId)
+      .toPromise()
+      .then((data: any) => {
+        this.travel = data.travel[0];
+      });
+
+    this.getRoutePoints();
+    this.getTravelUsers();
+  }
+
+  async getRoutePoints() {
+
+    this.markers = [];
+
+    await this._routeService
+      .getRoute(this.travel.id_Ruta)
+      .toPromise()
+      .then((data: any) => {
+        this.route = data.routes[0];
+      });
+
+    let position = {
+      lat: this.route.punto_Origen_LAT,
+      lng: this.route.punto_Origen_LNG,
+    };
+    this.markers.push(position);
+
+    await this.getStops();
+
+    let position2 = {
+      lat: this.route.punto_Destino_LAT,
+      lng: this.route.punto_Destino_LNG,
+    };
+    this.markers.push(position2);
+
+    this.loadMap();
+  }
+
+  async getStops() {
+    await this._routeService
+      .getStops(this.route.id)
+      .toPromise()
+      .then((data: any) => {
+        data.stops.forEach((element) => {
+          let position = {
+            lat: element.LAT,
+            lng: element.LNG,
+          };
+          this.markers.push(position);
+        });
+      });
+  }
+
+  async loadMap() {
     await this.getLocation();
     this.createMap();
     this.addMapEvents();
@@ -89,36 +155,10 @@ export class TravelDetailsPage implements OnInit {
     google.maps.event.addListenerOnce(this.myMap, "idle", () => {
       this.loading.dismiss();
       this.mapElem.classList.add("show-map");
+      this.calculateRute();
       this.setCurrentPosition();
-      this.setAllMarkers();
     });
   }
-
-  setCurrentPosition(){
-    this.getLocation()
-    this.currentPositionM = new google.maps.Marker({
-      position: {
-        lat: this.myLatLng.lat,
-        lng: this.myLatLng.lng
-      },
-      map: this.myMap,
-      icon: this.icon
-    });
-  }
-
-  setAllMarkers(){
-    for(let i=0; i<this.markers.length; i++){
-      new google.maps.Marker({
-        position: {
-          lat: this.markers[i].lat,
-          lng: this.markers[i].lng,
-        },
-        map: this.myMap,
-      });
-    }
-    this.calculateRute();
-  }
-
 
   async calculateRute() {
     if (this.markers.length > 2) {
@@ -126,8 +166,8 @@ export class TravelDetailsPage implements OnInit {
       this.wayPoints = await this.getWayPoints();
       this.directionsService.route(
         {
-          origin: this.markers[0].position.toJSON(),
-          destination: this.markers[maxIndex].position.toJSON(),
+          origin: this.markers[0],
+          destination: this.markers[maxIndex],
           waypoints: this.wayPoints,
           optimizeWaypoints: true,
           travelMode: google.maps.TravelMode.DRIVING,
@@ -151,8 +191,8 @@ export class TravelDetailsPage implements OnInit {
 
     this.intialPoint = {
       location: {
-        lat: this.markers[0].position.toJSON().lat,
-        lng: this.markers[0].position.toJSON().lng,
+        lat: this.markers[0].lat,
+        lng: this.markers[0].lng,
       },
     };
 
@@ -160,21 +200,29 @@ export class TravelDetailsPage implements OnInit {
       if (i > 0 && i < this.markers.length - 1) {
         wayPoints.push({
           location: {
-            lat: this.markers[i].position.toJSON().lat,
-            lng: this.markers[i].position.toJSON().lng,
+            lat: this.markers[i].lat,
+            lng: this.markers[i].lng,
           },
           stopover: true,
         });
       } else if (i == this.markers.length - 1) {
         this.finalPoint = {
           location: {
-            lat: this.markers[i].position.toJSON().lat,
-            lng: this.markers[i].position.toJSON().lng,
+            lat: this.markers[i].lat,
+            lng: this.markers[i].lng,
           },
         };
       }
     }
     return wayPoints;
+  }
+
+  getTravelUsers() {
+    this._travelService.getTravelUsers(this.travelId).subscribe(
+      (data: any) => {
+        this.users = data.users;
+      }
+    )
   }
 
   showHelp() {
@@ -187,11 +235,25 @@ export class TravelDetailsPage implements OnInit {
     );
   }
 
+  setCurrentPosition(){
+    this.getLocation()
+    this.currentPositionM = new google.maps.Marker({
+      position: {
+        lat: this.myLatLng.lat,
+        lng: this.myLatLng.lng
+      },
+      map: this.myMap,
+      icon: this.icon
+    });
+  }
+
   async addEvent(){
     const modal = await this.modalCtrl.create({
       component: AddEventsPage,
       componentProps: {
-        'travelId': 'Fernando'
+        myEvent: null,
+        onlyShowInfo:false,
+        travelId: this.travelId
       }
     })
 
@@ -199,18 +261,31 @@ export class TravelDetailsPage implements OnInit {
   }
 
   userAsistence(event, userId){
-    console.log(event.detail.checked, userId)
+
+    let json = {
+      idViaje: this.travelId,
+      idUsuario: userId,
+      isActive: event.detail.checked? 1 : 0
+    }
+
+    this._travelService.updateTravelUserState(json).subscribe({
+      next: (data: any) => {
+        if(data.status == 200){
+          this._globalService.showMessage("¡Se ha actualizado el estado del usuario!")
+        }else{
+          this._globalService.showMessage("¡Ha ocurrido un error al intentar acutalizar el estado del usuario!")
+        }
+      }, error: (err: HttpErrorResponse) => this._globalService.showMessage(`Error: ${err.message}`)
+    })
   }
 
   updateStatus() {
-    
-    //Al final poner marker en la posicion actual
     this.currentPositionM.setMap(null);
     this.currentPositionM = null;
-    this.setCurrentPosition();
+    this.startPage()
   }
 
   finishTravel(){
-    
+    this.router.navigate(['/driver-routes'])
   }
 }

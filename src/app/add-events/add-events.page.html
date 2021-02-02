@@ -26,9 +26,15 @@
       </ion-item>
 
       <ion-item>
-        <ion-label position="floating">descripción</ion-label>
-        <ion-textarea readonly formControlName="description"></ion-textarea>
+        <ion-label position="floating">Descripción</ion-label>
+        <ion-textarea  formControlName="description"></ion-textarea>
       </ion-item>
+      
+      <ion-item *ngIf="onlyShowInfo">
+        <ion-label>Hora de emisión:</ion-label>
+        <ion-datetime formControlName="time" displayFormat="h:mm a"></ion-datetime>
+      </ion-item>   
+
     </ion-list>
   </form>
 
@@ -43,7 +49,7 @@
       <ion-icon name="close-outline"></ion-icon>
     </ion-button>
 
-    <ion-button *ngIf="!onlyShowInfo" (click)="createEvent()">
+    <ion-button *ngIf="!onlyShowInfo" [disabled]="!eventFG.valid" (click)="createEvent()">
       <ion-label>Crear Evento</ion-label>
       <ion-icon name="add"></ion-icon>
     </ion-button>
